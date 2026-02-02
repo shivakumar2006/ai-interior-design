@@ -5,86 +5,83 @@ import {
     TamboProvider,
     currentPageContextHelper,
 } from "@tambo-ai/react";
+// import "./styles/globals.css";
 
-// Import all components
+// Import components (ab ye banayenge)
 import { Card, CardSchema } from "./components/Card";
 import { Button, ButtonSchema } from "./components/Button";
-// import { Alert, AlertSchema } from "./components/Alert";
-// import { Badge, BadgeSchema } from "./components/Badge";
-// import { Stats, StatsSchema } from "./components/Stats";
-// import { Hero, HeroSchema } from "./components/Hero";
-// import { Header, HeaderSchema } from "./components/Header";
-import { Footer, FooterSchema } from "./components/Footer";
-import { Features, FeaturesSchema } from "./components/Features";
-// import { Grid, GridSchema } from "./components/Grid";
+import { Alert, AlertSchema } from "./components/Alert";
+import { Badge, BadgeSchema } from "./components/Badge";
+import { Stats, StatsSchema } from "./components/Stats";
+import { RoomCard, RoomCardSchema } from "./components/RoomCard";
+import { BudgetBreakdown, BudgetBreakdownSchema } from "./components/Generator/BudgetBreakdown";
+import { ColorPalette, ColorPaletteSchema } from "./components/Room/ColorPalette";
+import { FurnitureGrid, FurnitureGridSchema } from "./components/Generator/FurnitureGrid";
+import { Room3D, Room3DSchema } from "./components/ui/Room3D";
+
 
 const components = [
-    // Layout Components
-    // {
-    //     name: "Header",
-    //     description: "Navigation header with links and CTA button",
-    //     component: Header,
-    //     propsSchema: HeaderSchema,
-    // },
-    // {
-    //     name: "Hero",
-    //     description: "Large hero section with title, subtitle, and call-to-action",
-    //     component: Hero,
-    //     propsSchema: HeroSchema,
-    // },
     {
-        name: "Features",
-        description: "Features showcase section with 3 feature cards",
-        component: Features,
-        propsSchema: FeaturesSchema,
+        name: "Room3D",
+        description: "3D interactive room visualization with furniture",
+        component: Room3D,
+        propsSchema: Room3DSchema,
     },
-    // {
-    //     name: "Grid",
-    //     description: "Grid layout container for arranging items",
-    //     component: Grid,
-    //     propsSchema: GridSchema,
-    // },
-    {
-        name: "Footer",
-        description: "Professional footer with links and copyright",
-        component: Footer,
-        propsSchema: FooterSchema,
-    },
-
-    // Content Components
     {
         name: "Card",
-        description: "Displays information in a card format with optional icon",
+        description: "Display information in a card",
         component: Card,
         propsSchema: CardSchema,
     },
     {
         name: "Button",
-        description: "Clickable button with variants (primary, secondary, outline, danger) and sizes",
+        description: "Clickable button with variants",
         component: Button,
         propsSchema: ButtonSchema,
     },
-    // {
-    //     name: "Alert",
-    //     description: "Alert message with types (info, success, warning, error)",
-    //     component: Alert,
-    //     propsSchema: AlertSchema,
-    // },
-    // {
-    //     name: "Badge",
-    //     description: "Small label badge with colors and variants",
-    //     component: Badge,
-    //     propsSchema: BadgeSchema,
-    // },
-    // {
-    //     name: "Stats",
-    //     description: "Metric/statistic display card with trend indicator",
-    //     component: Stats,
-    //     propsSchema: StatsSchema,
-    // },
+    {
+        name: "Alert",
+        description: "Alert message component",
+        component: Alert,
+        propsSchema: AlertSchema,
+    },
+    {
+        name: "Badge",
+        description: "Small label badge",
+        component: Badge,
+        propsSchema: BadgeSchema,
+    },
+    {
+        name: "Stats",
+        description: "Metric/statistic card",
+        component: Stats,
+        propsSchema: StatsSchema,
+    },
+    {
+        name: "RoomCard",
+        description: "Furniture item card with price and rating",
+        component: RoomCard,
+        propsSchema: RoomCardSchema,
+    },
+    {
+        name: "BudgetBreakdown",
+        description: "Pie chart showing budget breakdown",
+        component: BudgetBreakdown,
+        propsSchema: BudgetBreakdownSchema,
+    },
+    {
+        name: "ColorPalette",
+        description: "Color swatches for room design",
+        component: ColorPalette,
+        propsSchema: ColorPaletteSchema,
+    },
+    {
+        name: "FurnitureGrid",
+        description: "Grid of furniture recommendations",
+        component: FurnitureGrid,
+        propsSchema: FurnitureGridSchema,
+    },
 ];
-
-const tools = [];
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -92,7 +89,7 @@ root.render(
     <TamboProvider
         apiKey={import.meta.env.VITE_TAMBO_API_KEY}
         components={components}
-        tools={tools}
+        tools={[]}
         contextHelpers={{
             currentPage: currentPageContextHelper,
         }}

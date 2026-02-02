@@ -1,176 +1,264 @@
 import { useTamboThread } from "@tambo-ai/react";
-import { useState } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { Send, ChevronRight, Sparkles } from "lucide-react";
 import "./App.css";
 
 function App() {
     const { sendThreadMessage, thread, isLoading } = useTamboThread();
     const [inputValue, setInputValue] = useState("");
     const [isPanelOpen, setIsPanelOpen] = useState(true);
+    const [designStep, setDesignStep] = useState("brief");
+    const [renderedDesign, setRenderedDesign] = useState(null);
+
+    useEffect(() => {
+        if (!thread?.messages) return;
+
+        // Find latest assistant message WITH renderedComponent
+        const messageWithComponent = [...thread.messages]
+            .reverse()
+            .find(
+                (m) => m.role === "assistant" && m.renderedComponent
+            );
+
+        if (messageWithComponent) {
+            setRenderedDesign(messageWithComponent.renderedComponent);
+        }
+    }, [thread]);
+
+    const latestAssistantMessage = useMemo(() => {
+        return thread?.messages
+            ?.slice()
+            .reverse()
+            .find((m) => m.role === "assistant");
+    }, [thread]);
 
     const handleSendMessage = (e) => {
         e.preventDefault();
-        if (inputValue.trim()) {
-            sendThreadMessage(inputValue);
-            setInputValue("");
-        }
+        if (!inputValue.trim()) return;
+        sendThreadMessage(inputValue);
+        setInputValue("");
+        setDesignStep("viewing");
     };
 
-    // Get ONLY the LATEST assistant message with renderedComponent
-    const latestAssistantMessage = thread?.messages
-        ?.slice()
-        .reverse()
-        .find((msg) => msg.role === "assistant" && msg.renderedComponent);
-
     return (
-        <div className="flex h-screen bg-white overflow-hidden">
-            {/* LEFT SIDE - FULL PAGE COMPONENT DISPLAY */}
-            <div className={`flex-1 overflow-auto transition-all duration-300`}>
-                <div className="w-full h-full flex flex-col">
-                    {/* Header with Toggle Button */}
-                    <div className="bg-white border-b border-gray-100 px-8 py-6 flex items-center justify-between sticky top-0 z-40">
+        <div className="flex h-screen bg-white">
+            {/* MAIN CONTENT AREA */}
+            <div className="flex-1 flex flex-col overflow-hidden">
+                {/* HEADER */}
+                <header className="h-16 px-8 flex items-center justify-between border-b border-gray-100/80 bg-white/95 backdrop-blur">
+                    <div className="flex items-center gap-3">
+                        {/* AI LOGO */}
+                        <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+                            <Sparkles size={18} className="text-white" />
+                        </div>
                         <div>
-                            <h1 className="text-3xl font-light tracking-tight text-gray-900">
-                                Tambo UI Generator
+                            <h1 className="text-sm font-semibold tracking-wide text-gray-950">
+                                INTERIOR DESIGN
                             </h1>
-                            <p className="text-gray-500 text-sm font-light mt-1">
-                                {latestAssistantMessage ? "Components loaded" : "No components yet"}
+                            <p className="text-xs text-gray-500 font-light">
+                                Powered by AI
                             </p>
                         </div>
-                        <button
-                            onClick={() => setIsPanelOpen(!isPanelOpen)}
-                            className="p-2 hover:bg-gray-100 rounded-lg transition"
-                            title={isPanelOpen ? "Close chat" : "Open chat"}
-                        >
-                            <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                {isPanelOpen ? (
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                ) : (
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                                )}
-                            </svg>
-                        </button>
                     </div>
 
-                    {/* Main Content Area - Full Page with LATEST Component ONLY */}
-                    <div className="flex-1 overflow-auto bg-gradient-to-b from-white to-gray-50 p-8">
-                        {latestAssistantMessage ? (
-                            <div className="max-w-7xl mx-auto">
-                                {/* Display ONLY latest component */}
-                                <div className="animate-fadeIn">
-                                    {latestAssistantMessage.renderedComponent}
+                    <button
+                        onClick={() => setIsPanelOpen(!isPanelOpen)}
+                        className="hidden md:flex items-center gap-2 px-3 py-1.5 text-xs text-gray-600 hover:text-gray-950 font-medium hover:bg-gray-50 rounded-lg transition"
+                    >
+                        {isPanelOpen ? "Close" : "Open"}
+                        <ChevronRight size={14} className={`transition ${isPanelOpen ? "rotate-180" : ""}`} />
+                    </button>
+                </header>
+
+                {/* MAIN CONTENT */}
+                <main className="flex-1 overflow-auto bg-gradient-to-b from-white via-white to-gray-50/30">
+                    {designStep === "brief" ? (
+                        // LANDING PAGE
+                        <div className="h-full flex items-center justify-center px-8">
+                            <div className="max-w-xl text-center space-y-12">
+                                {/* AI BADGE */}
+                                <div className="flex items-center justify-center gap-2 bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200/50 rounded-full px-4 py-2 w-fit mx-auto">
+                                    <Sparkles size={16} className="text-purple-600" />
+                                    <span className="text-xs font-semibold text-purple-600">
+                                        AI-Powered Design
+                                    </span>
+                                </div>
+
+                                {/* HERO */}
+                                <div className="space-y-6">
+                                    <div className="space-y-2">
+                                        <h2 className="text-6xl font-light text-gray-950 leading-tight tracking-tight">
+                                            Design Your
+                                            <br />
+                                            <span className="text-gray-400">Perfect Space</span>
+                                        </h2>
+                                    </div>
+                                    <p className="text-base font-light text-gray-600 leading-relaxed">
+                                        Describe your room and let AI create personalized interior designs with furniture recommendations, color palettes, and budget breakdowns
+                                    </p>
+                                </div>
+
+                                {/* CTA */}
+                                <button
+                                    onClick={() =>
+                                        sendThreadMessage(
+                                            "Design a modern minimalist bedroom. Budget: $2000. Include furniture suggestions, color palette, and complete layout recommendation."
+                                        )
+                                    }
+                                    className="group px-8 py-3.5 bg-gray-950 text-white rounded-lg font-medium text-sm hover:bg-gray-800 transition flex items-center justify-center gap-2 mx-auto"
+                                >
+                                    Generate Design
+                                    <ChevronRight size={16} className="group-hover:translate-x-1 transition" />
+                                </button>
+
+                                {/* FEATURES */}
+                                <div className="grid grid-cols-3 gap-6 pt-8 border-t border-gray-100">
+                                    <div className="space-y-1">
+                                        <p className="text-2xl">🎨</p>
+                                        <p className="text-xs font-medium text-gray-950">Color Palettes</p>
+                                        <p className="text-xs font-light text-gray-600">Curated schemes</p>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <p className="text-2xl">🛋️</p>
+                                        <p className="text-xs font-medium text-gray-950">Furniture</p>
+                                        <p className="text-xs font-light text-gray-600">AI selected</p>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <p className="text-2xl">💰</p>
+                                        <p className="text-xs font-medium text-gray-950">Budget</p>
+                                        <p className="text-xs font-light text-gray-600">Always smart</p>
+                                    </div>
                                 </div>
                             </div>
-                        ) : (
-                            <div className="h-full flex flex-col items-center justify-center">
-                                <div className="text-center max-w-md">
-                                    <div className="w-20 h-20 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center mx-auto mb-6">
-                                        <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                                        </svg>
-                                    </div>
-                                    <h2 className="text-gray-900 font-light text-2xl mb-3">Start Building</h2>
-                                    <p className="text-gray-500 text-sm font-light leading-relaxed">
-                                        Use the chat panel to describe the components you want to create. They'll render here in full page view.
-                                    </p>
-                                    <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-                                        <p className="text-xs text-blue-900 font-light">
-                                            💡 Try: "Create a header, hero section, 3 feature cards, and a footer"
+                        </div>
+                    ) : (
+                        // DESIGN OUTPUT
+                        <div className="px-8 py-10">
+                            <div className="max-w-4xl mx-auto">
+                                {/* HEADER */}
+                                <div className="mb-8 flex items-center justify-between">
+                                    <div>
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <Sparkles size={16} className="text-purple-600" />
+                                            <span className="text-xs font-semibold text-purple-600">
+                                                AI-GENERATED DESIGN
+                                            </span>
+                                        </div>
+                                        <h2 className="text-3xl font-light text-gray-950 tracking-tight">
+                                            Your Design
+                                        </h2>
+                                        <p className="text-sm font-light text-gray-600 mt-2">
+                                            Rendered with artificial intelligence
                                         </p>
                                     </div>
                                 </div>
+
+                                {/* CONTENT */}
+                                {renderedDesign ? (
+                                    <div className="space-y-8">
+                                        {renderedDesign}
+                                    </div>
+                                ) : (
+                                    <div className="text-center py-12">
+                                        <p className="text-gray-400 font-light">
+                                            Waiting for design…
+                                        </p>
+                                    </div>
+                                )}
                             </div>
+                        </div>
+                    )}
+                </main>
+
+                {/* LOADING */}
+                {isLoading && (
+                    <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-40">
+                        <div className="flex items-center gap-3 bg-white px-5 py-2.5 rounded-lg border border-gray-100 shadow-sm">
+                            <div className="flex gap-1">
+                                <div className="w-1.5 h-1.5 bg-purple-600 rounded-full animate-bounce" style={{ animationDelay: "0ms" }}></div>
+                                <div className="w-1.5 h-1.5 bg-purple-600 rounded-full animate-bounce" style={{ animationDelay: "120ms" }}></div>
+                                <div className="w-1.5 h-1.5 bg-purple-600 rounded-full animate-bounce" style={{ animationDelay: "240ms" }}></div>
+                            </div>
+                            <span className="text-xs text-gray-600 font-light">AI generating…</span>
+                        </div>
+                    </div>
+                )}
+            </div>
+
+            {/* CHAT PANEL */}
+            {isPanelOpen && (
+                <aside className="w-96 border-l border-gray-100/80 flex flex-col bg-gray-50/50 backdrop-blur-sm">
+                    {/* HEADER */}
+                    <div className="h-16 px-6 flex items-center border-b border-gray-100/80">
+                        <div>
+                            <h3 className="text-sm font-semibold text-gray-950">CHAT WITH AI</h3>
+                            <p className="text-xs text-gray-500 font-light">Refine your design</p>
+                        </div>
+                    </div>
+
+                    {/* MESSAGES */}
+                    <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
+                        {thread?.messages && thread.messages.length > 0 ? (
+                            thread.messages.map((msg, i) => (
+                                <div
+                                    key={i}
+                                    className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+                                >
+                                    <div
+                                        className={`max-w-xs px-4 py-2.5 rounded-lg text-sm font-light leading-relaxed ${msg.role === "user"
+                                            ? "bg-gray-950 text-white"
+                                            : "bg-white text-gray-900 border border-gray-100"
+                                            }`}
+                                    >
+                                        {Array.isArray(msg.content)
+                                            ? msg.content.map((c, idx) => (
+                                                <p key={idx}>{c.text || c}</p>
+                                            ))
+                                            : msg.content}
+                                    </div>
+                                </div>
+                            ))
+                        ) : (
+                            <p className="text-xs text-gray-400 text-center py-10 font-light">
+                                Messages appear here
+                            </p>
                         )}
 
-                        {/* Loading Indicator */}
                         {isLoading && (
-                            <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2">
-                                <div className="flex items-center space-x-2 bg-white px-6 py-3 rounded-full shadow-lg border border-gray-200">
-                                    <div className="flex items-center space-x-1">
-                                        <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: "0ms" }}></div>
-                                        <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: "150ms" }}></div>
-                                        <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: "300ms" }}></div>
-                                    </div>
-                                    <span className="text-gray-600 text-sm font-light">Generating...</span>
+                            <div className="flex justify-start">
+                                <div className="flex gap-1 bg-white px-4 py-2.5 rounded-lg border border-gray-100">
+                                    <div className="w-1.5 h-1.5 bg-purple-600 rounded-full animate-bounce" style={{ animationDelay: "0ms" }}></div>
+                                    <div className="w-1.5 h-1.5 bg-purple-600 rounded-full animate-bounce" style={{ animationDelay: "120ms" }}></div>
+                                    <div className="w-1.5 h-1.5 bg-purple-600 rounded-full animate-bounce" style={{ animationDelay: "240ms" }}></div>
                                 </div>
                             </div>
                         )}
                     </div>
-                </div>
-            </div>
 
-            {/* RIGHT SIDE - COLLAPSIBLE CHAT PANEL */}
-            <div
-                className={`${isPanelOpen ? "w-96" : "w-0"
-                    } bg-white border-l border-gray-100 flex flex-col transition-all duration-300 overflow-hidden shadow-lg`}
-            >
-                {/* Chat Header */}
-                <div className="bg-white border-b border-gray-100 px-6 py-4">
-                    <h2 className="text-lg font-semibold text-gray-900">Chat</h2>
-                    <p className="text-xs text-gray-500 font-light mt-1">Describe your components</p>
-                </div>
-
-                {/* Chat Messages */}
-                <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
-                    {thread?.messages && thread.messages.length > 0 ? (
-                        thread.messages.map((message, idx) => (
-                            <div key={idx} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
-                                <div
-                                    className={`${message.role === "user"
-                                        ? "bg-blue-500 text-white rounded-2xl px-4 py-2 max-w-xs"
-                                        : "bg-gray-100 text-gray-800 rounded-2xl px-4 py-2 max-w-xs"
-                                        }`}
-                                >
-                                    {Array.isArray(message.content) ? (
-                                        message.content.map((part, i) => (
-                                            <p key={i} className="text-sm font-light leading-relaxed">
-                                                {part.text || part}
-                                            </p>
-                                        ))
-                                    ) : (
-                                        <p className="text-sm font-light leading-relaxed">{message.content}</p>
-                                    )}
-                                </div>
-                            </div>
-                        ))
-                    ) : (
-                        <div className="text-center py-8">
-                            <p className="text-gray-400 text-xs font-light">No messages yet</p>
+                    {/* INPUT */}
+                    <form
+                        onSubmit={handleSendMessage}
+                        className="border-t border-gray-100/80 p-4 bg-gray-50/50 backdrop-blur-sm"
+                    >
+                        <div className="flex gap-2">
+                            <input
+                                value={inputValue}
+                                onChange={(e) => setInputValue(e.target.value)}
+                                placeholder="Ask for changes…"
+                                className="flex-1 px-3.5 py-2.5 bg-white border border-gray-100 rounded-lg text-sm font-light placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-600/10 transition"
+                                disabled={isLoading}
+                            />
+                            <button
+                                type="submit"
+                                disabled={isLoading || !inputValue.trim()}
+                                className="px-3.5 py-2.5 bg-gray-950 text-white rounded-lg hover:bg-gray-800 transition disabled:bg-gray-300 disabled:cursor-not-allowed"
+                            >
+                                <Send size={16} />
+                            </button>
                         </div>
-                    )}
-
-                    {/* Loading Indicator in Chat */}
-                    {isLoading && (
-                        <div className="flex justify-start pt-2">
-                            <div className="flex items-center space-x-1">
-                                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }}></div>
-                                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }}></div>
-                                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }}></div>
-                            </div>
-                        </div>
-                    )}
-                </div>
-
-                {/* Chat Input */}
-                <div className="bg-white border-t border-gray-100 px-6 py-4">
-                    <form onSubmit={handleSendMessage} className="space-y-3">
-                        <input
-                            type="text"
-                            value={inputValue}
-                            onChange={(e) => setInputValue(e.target.value)}
-                            placeholder="Describe components..."
-                            className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm font-light"
-                            disabled={isLoading}
-                        />
-                        <button
-                            type="submit"
-                            disabled={isLoading || !inputValue.trim()}
-                            className="w-full px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg hover:from-blue-600 hover:to-indigo-700 disabled:from-gray-400 disabled:to-gray-400 transition font-light text-sm"
-                        >
-                            {isLoading ? "Generating..." : "Send"}
-                        </button>
                     </form>
-                </div>
-            </div>
+                </aside>
+            )}
         </div>
     );
 }
