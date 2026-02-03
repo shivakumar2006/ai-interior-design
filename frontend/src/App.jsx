@@ -40,6 +40,32 @@ function App() {
         setDesignStep("viewing");
     };
 
+    // Helper to safely render message content
+    const renderMessageContent = (content) => {
+        if (!content) return "";
+
+        if (typeof content === "string") {
+            return content;
+        }
+
+        if (Array.isArray(content)) {
+            return content
+                .map((c) => {
+                    if (typeof c === "string") return c;
+                    if (c && typeof c === "object" && c.text) return c.text;
+                    return "";
+                })
+                .filter(Boolean)
+                .join(" ");
+        }
+
+        if (typeof content === "object" && content.text) {
+            return content.text;
+        }
+
+        return "";
+    };
+
     return (
         <div className="flex h-screen bg-white">
             {/* MAIN CONTENT AREA */}
@@ -102,7 +128,7 @@ function App() {
                                 <button
                                     onClick={() =>
                                         sendThreadMessage(
-                                            "Design a modern minimalist bedroom. Budget: $2000. Include furniture suggestions, color palette, and complete layout recommendation."
+                                            "Design a modern minimalist bedroom. Budget: $2000. Include 3D room visualization, furniture suggestions, color palette, and complete layout recommendation."
                                         )
                                     }
                                     className="group px-8 py-3.5 bg-gray-950 text-white rounded-lg font-medium text-sm hover:bg-gray-800 transition flex items-center justify-center gap-2 mx-auto"
@@ -156,7 +182,15 @@ function App() {
                                 {/* CONTENT */}
                                 {renderedDesign ? (
                                     <div className="space-y-8">
-                                        {renderedDesign}
+                                        {Array.isArray(renderedDesign) ? (
+                                            renderedDesign.map((component, idx) => (
+                                                <div key={idx}>
+                                                    {component}
+                                                </div>
+                                            ))
+                                        ) : (
+                                            renderedDesign
+                                        )}
                                     </div>
                                 ) : (
                                     <div className="text-center py-12">
@@ -205,16 +239,12 @@ function App() {
                                     className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
                                 >
                                     <div
-                                        className={`max-w-xs px-4 py-2.5 rounded-lg text-sm font-light leading-relaxed ${msg.role === "user"
+                                        className={`max-w-xs px-4 py-2.5 rounded-lg text-sm font-light leading-relaxed break-words ${msg.role === "user"
                                             ? "bg-gray-950 text-white"
                                             : "bg-white text-gray-900 border border-gray-100"
                                             }`}
                                     >
-                                        {Array.isArray(msg.content)
-                                            ? msg.content.map((c, idx) => (
-                                                <p key={idx}>{c.text || c}</p>
-                                            ))
-                                            : msg.content}
+                                        {renderMessageContent(msg.content)}
                                     </div>
                                 </div>
                             ))

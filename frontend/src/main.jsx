@@ -18,9 +18,43 @@ import { BudgetBreakdown, BudgetBreakdownSchema } from "./components/Generator/B
 import { ColorPalette, ColorPaletteSchema } from "./components/Room/ColorPalette";
 import { FurnitureGrid, FurnitureGridSchema } from "./components/Generator/FurnitureGrid";
 import { Room3D, Room3DSchema } from "./components/ui/Room3D";
-
+import { RoomAR, RoomARSchema } from "./components/ui/RoomAR";
+import { DesignComparison, DesignComparisonSchema } from "./components/ui/DesignComparison";
+import { Room3DMinimalist, Room3DMinimalistSchema } from "./components/ui/MinimalistRoom3d";
+import { Room3DBudget, Room3DBudgetSchema } from "./components/ui/Room3dBudget";
+import { Room3DLuxury, Room3DLuxurySchema } from "./components/ui/Room3DLuxury";
 
 const components = [
+    {
+        name: "Room3DLuxury",
+        description: "Luxury 3D interactive room visualization with furniture",
+        component: Room3DLuxury,
+        propsSchema: Room3DLuxurySchema,
+    },
+    {
+        name: "Room3DBudget",
+        description: "Budget 3D interactive room visualization with furniture",
+        component: Room3DBudget,
+        propsSchema: Room3DBudgetSchema,
+    },
+    {
+        name: "Room3DMinimalist",
+        description: "Minimalist 3D interactive room visualization with furniture",
+        component: Room3DMinimalist,
+        propsSchema: Room3DMinimalistSchema,
+    },
+    {
+        name: "DesignComparison",
+        description: "Design comparison component",
+        component: DesignComparison,
+        propsSchema: DesignComparisonSchema,
+    },
+    {
+        name: "RoomAR",
+        description: "AR interactive room visualization with furniture",
+        component: RoomAR,
+        propsSchema: RoomARSchema,
+    },
     {
         name: "Room3D",
         description: "3D interactive room visualization with furniture",
