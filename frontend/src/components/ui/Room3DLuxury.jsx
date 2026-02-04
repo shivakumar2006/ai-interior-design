@@ -119,7 +119,7 @@ export const Room3DLuxury = ({
             scene.add(trim);
         }
 
-        // LEFT WALL
+        // LEFT WALL with DOOR
         const sideWallDepth = 14;
         const sideWall = new THREE.Mesh(
             new THREE.BoxGeometry(wallThickness, wallHeight, sideWallDepth),
@@ -134,21 +134,188 @@ export const Room3DLuxury = ({
         scene.add(sideWall);
         meshesRef.current.leftWall = baseWallMat;
 
-        /* ================= LUXURY BED ================= */
+        /* ================= LUXURY DOOR (WIDER - LEFT WALL) ================= */
+        const doorGroup = new THREE.Group();
+
+        // Wider door frame (luxury detail)
+        const doorFrameMat = new THREE.MeshStandardMaterial({
+            color: new THREE.Color("#c4a574"),
+            roughness: 0.6,
+            metalness: 0.3
+        });
+
+        // Door frame - left side
+        const doorFrameL = new THREE.Mesh(
+            new THREE.BoxGeometry(0.1, 2.5, 0.08),
+            doorFrameMat
+        );
+        doorFrameL.position.set(-6.75, 1.25, 0);
+        doorFrameL.position.z = -7;
+        doorFrameL.castShadow = true;
+
+        // Door frame - right side
+        const doorFrameR = new THREE.Mesh(
+            new THREE.BoxGeometry(0.1, 2.5, 0.08),
+            doorFrameMat
+        );
+        doorFrameR.position.set(-5.85, 1.25, 0);
+        doorFrameR.position.z = -7;
+        doorFrameR.castShadow = true;
+
+        // Door frame - top
+        const doorFrameT = new THREE.Mesh(
+            new THREE.BoxGeometry(1.05, 0.1, 0.08),  // WIDER: was 0.95
+            doorFrameMat
+        );
+        doorFrameT.position.set(-6.3, 2.55, 0);
+        doorFrameT.position.z = -7;
+        doorFrameT.castShadow = true;
+
+        // Wider door panel (walnut luxury wood)
+        const doorMat = new THREE.MeshStandardMaterial({
+            color: new THREE.Color("#6b5344"),
+            roughness: 0.6,
+            metalness: 0.1
+        });
+
+        const door = new THREE.Mesh(
+            new THREE.BoxGeometry(0.9, 2.4, 0.05),  // WIDER: was 0.8
+            doorMat
+        );
+        door.position.set(-6.3, 1.2, -6.99);
+        door.castShadow = true;
+
+        // Door handle (brass luxury)
+        const handleMat = new THREE.MeshStandardMaterial({
+            color: new THREE.Color("#b5a642"),
+            metalness: 0.85,
+            roughness: 0.15
+        });
+
+        const handle = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.04, 0.04, 0.18, 16),  // BIGGER handle
+            handleMat
+        );
+        handle.rotation.z = Math.PI / 2;
+        handle.position.set(-5.85, 1.2, -6.94);
+        handle.castShadow = true;
+
+        doorGroup.add(doorFrameL, doorFrameR, doorFrameT, door, handle);
+        scene.add(doorGroup);
+
+        /* ================= ABSTRACT WALL PAINTING (LEFT WALL) ================= */
+        const paintingGroup = new THREE.Group();
+
+        // Painting canvas (white background)
+        const canvasMat = new THREE.MeshStandardMaterial({
+            color: new THREE.Color("#faf8f3"),
+            roughness: 0.3,
+            metalness: 0.05
+        });
+
+        const canvas = new THREE.Mesh(
+            new THREE.BoxGeometry(1, 1.2, 0.02),
+            canvasMat
+        );
+        canvas.position.set(-5.5, 2.2, -6.98);
+        canvas.position.x = -3.6;
+        canvas.castShadow = true;
+
+        // Painting frame (gold/brass)
+        const frameMat = new THREE.MeshStandardMaterial({
+            color: new THREE.Color("#c9a961"),
+            metalness: 0.7,
+            roughness: 0.25
+        });
+
+        // Frame border (simple rectangle outline effect via 4 side pieces)
+        const frameThickness = 0.08;
+
+        const frameTop = new THREE.Mesh(
+            new THREE.BoxGeometry(1.16, frameThickness, 0.01),
+            frameMat
+        );
+        frameTop.position.set(-5.5, 2.8, -6.97);
+        frameTop.position.x = -3.6;
+        frameTop.castShadow = true;
+
+        const frameBottom = frameTop.clone();
+        frameBottom.position.y = 1.6;
+        frameBottom.position.x = -3.6;
+
+        const frameLeft = new THREE.Mesh(
+            new THREE.BoxGeometry(frameThickness, 1.2, 0.01),
+            frameMat
+        );
+        frameLeft.position.set(-6.08, 2.2, -6.97);
+        frameLeft.position.x = -4.2;
+        frameLeft.castShadow = true;
+
+        const frameRight = frameLeft.clone();
+        frameRight.position.x = -3;
+
+        // Abstract painting design (3 colored shapes)
+        // Shape 1: Red/orange circle
+        const shape1Mat = new THREE.MeshStandardMaterial({
+            color: new THREE.Color("#d84a38"),
+            roughness: 0.7
+        });
+
+        const shape1 = new THREE.Mesh(
+            new THREE.SphereGeometry(0.2, 16, 16),
+            shape1Mat
+        );
+        shape1.position.set(-5.8, 2.5, -6.97);
+        shape1.position.x = -4;
+        shape1.castShadow = true;
+
+        // Shape 2: Blue rectangle
+        const shape2Mat = new THREE.MeshStandardMaterial({
+            color: new THREE.Color("#1e3a5f"),
+            roughness: 0.7
+        });
+
+        const shape2 = new THREE.Mesh(
+            new THREE.BoxGeometry(0.35, 0.5, 0.01),
+            shape2Mat
+        );
+        shape2.position.set(-5.2, 1.8, -6.96);
+        shape2.position.x = -3.2;
+        shape2.castShadow = true;
+
+        // Shape 3: Yellow/gold accent
+        const shape3Mat = new THREE.MeshStandardMaterial({
+            color: new THREE.Color("#e6b942"),
+            roughness: 0.6
+        });
+
+        const shape3 = new THREE.Mesh(
+            new THREE.ConeGeometry(0.18, 0.4, 8),
+            shape3Mat
+        );
+        shape3.position.set(-5.5, 1.5, -6.96);
+        shape3.position.x =
+            shape3.rotation.x = Math.PI / 4;
+        shape3.castShadow = true;
+
+        paintingGroup.add(canvas, frameTop, frameBottom, frameLeft, frameRight, shape1, shape2, shape3);
+        scene.add(paintingGroup);
+
+        /* ================= LUXURY KING BED ================= */
         const bed = new THREE.Group();
 
-        // Premium mattress
+        // Premium king mattress (larger)
         const mattressMat = new THREE.MeshStandardMaterial({
             color: new THREE.Color(bedColor),
             roughness: 0.5,
             metalness: 0.1
         });
         const mattress = new THREE.Mesh(
-            new THREE.BoxGeometry(2.6, 0.5, 3),
+            new THREE.BoxGeometry(3.2, 0.5, 3.5),  // King size: wider and longer
             mattressMat
         );
         mattress.position.y = 0.7;
-        mattress.position.z = -2;
+        mattress.position.z = -1.8;
         mattress.castShadow = true;
         meshesRef.current.bed = mattressMat;
 
@@ -159,31 +326,31 @@ export const Room3DLuxury = ({
             metalness: 0.2
         });
         const base = new THREE.Mesh(
-            new THREE.BoxGeometry(2.8, 0.4, 3.2),
+            new THREE.BoxGeometry(3.4, 0.4, 3.7),  // Slightly larger base
             baseMat
         );
         base.position.y = 0.2;
-        base.position.z = -2;
+        base.position.z = -1.8;
         base.castShadow = true;
 
-        // Luxury headboard
+        // Luxury king headboard (larger, more impressive)
         const headboardMat = new THREE.MeshStandardMaterial({
             color: new THREE.Color("#2a2a2a"),
             roughness: 0.6,
             metalness: 0.1
         });
         const headboard = new THREE.Mesh(
-            new THREE.BoxGeometry(2.8, 1.6, 0.15),
+            new THREE.BoxGeometry(3.4, 2, 0.15),  // Taller headboard for king bed
             headboardMat
         );
-        headboard.position.set(0, 1.1, -3.5);
+        headboard.position.set(0, 1.2, -3.6);  // Positioned at head of bed
         headboard.castShadow = true;
 
         bed.add(mattress, base, headboard);
-        bed.position.set(1.5, 0, -3);
+        bed.position.set(1.5, 0, -3);  // Positioned in back right area
         scene.add(bed);
 
-        /* ================= LUXURY SOFA ================= */
+        /* ================= LUXURY SOFA (LEFT SIDE - LIVING AREA) ================= */
         const sofaGroup = new THREE.Group();
 
         const sofaMat = new THREE.MeshStandardMaterial({
@@ -240,56 +407,268 @@ export const Room3DLuxury = ({
         leg4.position.set(1.8, 0.15, -0.7);
 
         sofaGroup.add(sofaBase, sofaCushion, sofaBackrest, leg1, leg2, leg3, leg4);
-        sofaGroup.position.set(-2, 0, 2);
+        sofaGroup.position.set(-3.5, 0, 2);  // LEFT SIDE - Living area facing room
+        sofaGroup.position.x = -6;
+        sofaGroup.rotation.y = Math.PI / 2;
+
         scene.add(sofaGroup);
         meshesRef.current.sofa = sofaMat;
 
-        /* ================= MARBLE COFFEE TABLE ================= */
-        const tableGroup = new THREE.Group();
+        /* ================= LUXURY DESK WITH LAPTOP (LARGER) ================= */
+        const deskGroup = new THREE.Group();
 
-        const marbleMat = new THREE.MeshStandardMaterial({
-            color: new THREE.Color(tableColor),
-            roughness: 0.3,
-            metalness: 0,
+        // Larger luxury desk top (walnut wood style)
+        const deskTopMat = new THREE.MeshStandardMaterial({
+            color: new THREE.Color("#8b6f47"),
+            roughness: 0.5,
+            metalness: 0
         });
 
-        // Marble top
-        const tableTop = new THREE.Mesh(
-            new THREE.BoxGeometry(1.3, 0.04, 1),
-            marbleMat
+        const deskTop = new THREE.Mesh(
+            new THREE.BoxGeometry(2.2, 0.05, 1.1),  // BIGGER: was 1.6 × 0.8
+            deskTopMat
         );
-        tableTop.position.y = 0.5;
-        tableTop.castShadow = true;
+        deskTop.position.y = 0.75;
+        deskTop.position.x = 0.7;
+        deskTop.position.z = -4;
+        deskTop.castShadow = true;
 
-        // Brass legs
-        const brassLegMat = new THREE.MeshStandardMaterial({
+        // Larger luxury desk legs (brass)
+        const deskLegMat = new THREE.MeshStandardMaterial({
             color: new THREE.Color("#b5a642"),
             metalness: 0.85,
             roughness: 0.15
         });
 
-        const brassLeg1 = new THREE.Mesh(
-            new THREE.BoxGeometry(0.1, 0.5, 0.08),
-            brassLegMat
+        const deskLeg1 = new THREE.Mesh(
+            new THREE.BoxGeometry(0.12, 0.75, 0.08),  // BIGGER legs
+            deskLegMat
         );
-        brassLeg1.position.set(-0.55, 0.25, -0.4);
-        brassLeg1.castShadow = true;
+        deskLeg1.position.set(-1, 0.375, -0.45);
+        deskLeg1.position.x = -0.3;
+        deskLeg1.position.z = -4.5;
+        deskLeg1.castShadow = true;
 
-        const brassLeg2 = brassLeg1.clone();
-        brassLeg2.position.set(0.55, 0.25, -0.4);
+        const deskLeg2 = deskLeg1.clone();
+        deskLeg2.position.set(1, 0.375, -0.45);
+        deskLeg2.position.x = 1.7;
+        deskLeg2.position.z = -4.5;
 
-        const brassLeg3 = brassLeg1.clone();
-        brassLeg3.position.set(-0.55, 0.25, 0.4);
+        const deskLeg3 = deskLeg1.clone();
+        deskLeg3.position.set(-1, 0.375, 0.45);
+        deskLeg3.position.x = -0.3;
+        deskLeg3.position.z = -3.5;
 
-        const brassLeg4 = brassLeg1.clone();
-        brassLeg4.position.set(0.55, 0.25, 0.4);
+        const deskLeg4 = deskLeg1.clone();
+        deskLeg4.position.set(1, 0.375, 0.45);
+        deskLeg4.position.x = 1.7;
+        deskLeg4.position.z = -3.5;
 
-        tableGroup.add(tableTop, brassLeg1, brassLeg2, brassLeg3, brassLeg4);
-        tableGroup.position.set(0, 0, 0.8);
+        // Larger luxury laptop on desk
+        const laptopMat = new THREE.MeshStandardMaterial({
+            color: new THREE.Color("#1a1a1a"),
+            metalness: 0.6,
+            roughness: 0.3
+        });
+
+        // Larger laptop body
+        const laptop = new THREE.Mesh(
+            new THREE.BoxGeometry(0.5, 0.03, 0.35),  // BIGGER: was 0.35 × 0.25
+            laptopMat
+        );
+        laptop.position.set(0.5, 0.78, 0);
+        laptop.rotation.x = 0.2;
+        laptop.position.z = -4;
+        laptop.castShadow = true;
+
+        // Larger laptop screen
+        const screenMat = new THREE.MeshStandardMaterial({
+            color: new THREE.Color("#0a0a0a"),
+            metalness: 0.5,
+            roughness: 0.2
+        });
+
+        const screen = new THREE.Mesh(
+            new THREE.BoxGeometry(0.48, 0.25, 0.02),  // BIGGER screen
+            screenMat
+        );
+        screen.position.set(0.5, 0.92, -0.08);
+        screen.rotation.x = -0.3;
+        screen.position.z = -4.2;
+        screen.castShadow = true;
+
+        deskGroup.add(deskTop, deskLeg1, deskLeg2, deskLeg3, deskLeg4, laptop, screen);
+        deskGroup.position.set(4.5, 0, -2);
+        scene.add(deskGroup);
+        /* ================= ULTRA LUXURY CONSOLE TABLE + TV ================= */
+        const tableGroup = new THREE.Group();
+
+        // ===== Marble Material =====
+        const marbleMat = new THREE.MeshStandardMaterial({
+            color: new THREE.Color(tableColor),
+            roughness: 0.2,
+            metalness: 0.1,
+        });
+
+        // ===== EXTRA EXTRA WIDE CONSOLE TOP =====
+        const tableTop = new THREE.Mesh(
+            new THREE.BoxGeometry(4.2, 0.1, 1.05), // 🔥 EVEN BIGGER = REAL LUXURY
+            marbleMat
+        );
+        tableTop.position.y = 0.85;
+        tableTop.castShadow = true;
+
+        // ===== THICK HEAVY BRASS LEGS =====
+        const brassLegMat = new THREE.MeshStandardMaterial({
+            color: new THREE.Color("#b5a642"),
+            metalness: 0.95,
+            roughness: 0.1
+        });
+
+        const legGeom = new THREE.BoxGeometry(0.22, 0.85, 0.22);
+
+        const leg_1 = new THREE.Mesh(legGeom, brassLegMat);
+        leg_1.position.set(-1.95, 0.425, -0.42);
+
+        const leg_2 = leg_1.clone();
+        leg_2.position.set(1.95, 0.425, -0.42);
+
+        const leg_3 = leg_1.clone();
+        leg_3.position.set(-1.95, 0.425, 0.42); // ✅ FIXED
+
+        const leg_4 = leg_1.clone();
+        leg_4.position.set(1.95, 0.425, 0.42);
+
+        // ===== DOUBLE THICK LOWER SHELVES =====
+        const lowerShelf1 = new THREE.Mesh(
+            new THREE.BoxGeometry(3.6, 0.06, 0.8),
+            marbleMat
+        );
+        lowerShelf1.position.y = 0.4;
+
+        const lowerShelf2 = lowerShelf1.clone();
+        lowerShelf2.position.y = 0.18;
+
+        lowerShelf1.castShadow = true;
+        lowerShelf2.castShadow = true;
+
+        // Assemble console
+        tableGroup.add(
+            tableTop,
+            leg_1, leg_2, leg_3, leg_4,
+            lowerShelf1, lowerShelf2
+        );
+
+        // ===== POSITION (BACK WALL STATEMENT PIECE) =====
+        tableGroup.position.set(0, 0, -5.2);
+        tableGroup.position.z = 6.6;
         scene.add(tableGroup);
+
+        // AI color control
         meshesRef.current.table = marbleMat;
 
-        /* ================= DESIGNER LAMP ================= */
+        /* ================= MASSIVE LUXURY TV ================= */
+        const tvGroup = new THREE.Group();
+
+        // ===== TV FRAME (VERY LARGE) =====
+        const tvFrame = new THREE.Mesh(
+            new THREE.BoxGeometry(3.8, 2.2, 0.12), // 🔥 PENTHOUSE TV
+            new THREE.MeshStandardMaterial({
+                color: "#0b0b0b",
+                roughness: 0.3,
+                metalness: 0.4
+            })
+        );
+
+        // ===== TV SCREEN =====
+        const tvScreen = new THREE.Mesh(
+            new THREE.BoxGeometry(3.6, 2.05, 0.05),
+            new THREE.MeshStandardMaterial({
+                color: "#000000",
+                metalness: 0.75,
+                roughness: 0.1,
+                emissive: "#0a0a0a",
+                emissiveIntensity: 0.4
+            })
+        );
+
+        tvGroup.add(tvFrame, tvScreen);
+
+        // ===== TV POSITION (DOMINANT + BED FACING) =====
+        tvGroup.position.set(0, 2.65, -4.95);
+        tvGroup.rotation.y = Math.PI; // FACE BED
+        tvGroup.position.z = 6.7;
+        scene.add(tvGroup);
+
+        // ===== STRONG CINEMATIC BACK GLOW =====
+        const tvGlow = new THREE.PointLight(0xffe6c7, 0.75, 5);
+        tvGlow.position.set(0, 2.65, -4.65);
+        scene.add(tvGlow);
+
+        /* ================= LUXURY OFFICE CHAIR (LARGER) ================= */
+        const chairGroup = new THREE.Group();
+
+        // Larger chair seat
+        const chairMat = new THREE.MeshStandardMaterial({
+            color: new THREE.Color("#2c2c2c"),
+            roughness: 0.4,
+            metalness: 0.2
+        });
+
+        const chairSeat = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.5, 0.5, 0.15, 24),  // BIGGER: was 0.35
+            chairMat
+        );
+        chairSeat.position.y = 0.5;
+        chairSeat.position.x = 0.7;
+        chairSeat.position.z = -3.5;
+        chairSeat.castShadow = true;
+
+        // Larger chair backrest
+        const backrestMesh = new THREE.Mesh(
+            new THREE.BoxGeometry(0.7, 1.2, 0.15),  // BIGGER: was 0.5 × 0.8
+            chairMat
+        );
+        backrestMesh.position.set(0, 1.3, -0.35);
+        backrestMesh.position.x = 0.7;
+        backrestMesh.position.z = -3;
+        backrestMesh.castShadow = true;
+
+        // Larger chair pole (metal)
+        const poleMat = new THREE.MeshStandardMaterial({
+            color: new THREE.Color("#666666"),
+            metalness: 0.7,
+            roughness: 0.3
+        });
+
+        const pole = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.08, 0.08, 0.5, 12),  // BIGGER pole
+            poleMat
+        );
+        pole.position.y = 0.25;
+        pole.position.x = 0.7;
+        pole.position.z = -3.5;
+        pole.castShadow = true;
+
+        // Larger chair wheels base
+        const wheelMat = new THREE.MeshStandardMaterial({
+            color: new THREE.Color("#444444"),
+            metalness: 0.6,
+            roughness: 0.4
+        });
+
+        const wheelBase = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.5, 0.5, 0.08, 20),  // BIGGER: was 0.3
+            wheelMat
+        );
+        wheelBase.position.y = 0.04;
+        wheelBase.position.x = 0.7;
+        wheelBase.position.z = -3.5;
+        wheelBase.castShadow = true;
+
+        chairGroup.add(chairSeat, backrestMesh, pole, wheelBase);
+        chairGroup.position.set(4.5, 0, -0.2);
+        scene.add(chairGroup);
         const lampGroup = new THREE.Group();
 
         const lampMat = new THREE.MeshStandardMaterial({
@@ -304,6 +683,8 @@ export const Room3DLuxury = ({
             lampMat
         );
         luxBase.position.y = 0.06;
+        luxBase.position.x = -4.2;
+        luxBase.position.z = -4.2;
         luxBase.castShadow = true;
 
         // Lamp pole
@@ -312,6 +693,8 @@ export const Room3DLuxury = ({
             lampMat
         );
         luxPole.position.y = 1;
+        luxPole.position.x = -4.2;
+        luxPole.position.z = -4.2;
         luxPole.castShadow = true;
 
         // Designer shade - elegant curve
@@ -324,6 +707,8 @@ export const Room3DLuxury = ({
         const shadeGeom = new THREE.ConeGeometry(0.35, 0.5, 20);
         const luxShade = new THREE.Mesh(shadeGeom, luxShadeMat);
         luxShade.position.y = 1.8;
+        luxShade.position.x = -4.2;
+        luxShade.position.z = -4.2;
         luxShade.castShadow = true;
 
         lampGroup.add(luxBase, luxPole, luxShade);

@@ -48,7 +48,6 @@ export const Room3DMinimalist = ({
         controls.target.set(0, 2.3, -2);
 
         /* ================= LIGHTING ================= */
-        // Soft, minimal lighting for zen feel
         scene.add(new THREE.AmbientLight(0xffffff, 0.5));
 
         const sunLight = new THREE.DirectionalLight(0xffffff, 0.8);
@@ -110,66 +109,126 @@ export const Room3DMinimalist = ({
         scene.add(sideWall);
         meshesRef.current.leftWall = baseWallMat;
 
-        /* ================= MINIMALIST BED ================= */
+        /* ================= MINIMALIST DOOR ================= */
+        const doorGroup = new THREE.Group();
+
+        const doorFrameMat = new THREE.MeshStandardMaterial({
+            color: new THREE.Color("#f5f5f5"),
+            roughness: 0.8,
+        });
+
+        const doorFrameL = new THREE.Mesh(
+            new THREE.BoxGeometry(0.08, 2.4, 0.05),
+            doorFrameMat
+        );
+        doorFrameL.position.set(-0.6, 1.2, -6.88);
+        doorFrameL.castShadow = true;
+
+        const doorFrameR = new THREE.Mesh(
+            new THREE.BoxGeometry(0.08, 2.4, 0.05),
+            doorFrameMat
+        );
+        doorFrameR.position.set(0.6, 1.2, -6.88);
+        doorFrameR.castShadow = true;
+
+        const doorFrameT = new THREE.Mesh(
+            new THREE.BoxGeometry(1.28, 0.08, 0.05),
+            doorFrameMat
+        );
+        doorFrameT.position.set(0, 2.46, -6.88);
+        doorFrameT.castShadow = true;
+
+        const doorMat = new THREE.MeshStandardMaterial({
+            color: new THREE.Color("#e8e8e8"),
+            roughness: 0.7,
+        });
+
+        const door = new THREE.Mesh(
+            new THREE.BoxGeometry(1.2, 2.3, 0.05),
+            doorMat
+        );
+        door.position.set(0, 1.15, -6.83);
+        door.castShadow = true;
+
+        const handleMat = new THREE.MeshStandardMaterial({
+            color: new THREE.Color("#cccccc"),
+            metalness: 0.3,
+            roughness: 0.5,
+        });
+
+        const handle = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.025, 0.025, 0.12, 16),
+            handleMat
+        );
+        handle.rotation.z = Math.PI / 2;
+        handle.position.set(0.5, 1.15, -6.78);
+        handle.castShadow = true;
+
+        doorGroup.add(doorFrameL, doorFrameR, doorFrameT, door, handle);
+        scene.add(doorGroup);
+
+        /* ================= MINIMALIST BED (SLEEPING AREA - BACK LEFT) ================= */
         const bed = new THREE.Group();
 
-        // Platform bed (no frame, just mattress)
-        const platfMat = new THREE.MeshStandardMaterial({
+        const bedMat = new THREE.MeshStandardMaterial({
             color: new THREE.Color(bedColor),
             roughness: 0.8
         });
+
         const platform = new THREE.Mesh(
             new THREE.BoxGeometry(2.4, 0.3, 2.8),
-            platfMat
+            bedMat
         );
         platform.position.y = 0.15;
-        platform.position.z = -2;
         platform.castShadow = true;
-        meshesRef.current.bed = platfMat;
+        meshesRef.current.bed = bedMat;
 
         bed.add(platform);
-        bed.position.set(1.5, 0, -3);
+        bed.position.set(-4.5, 0, -4);  // BACK LEFT CORNER - Sleeping area
         scene.add(bed);
 
-        /* ================= MODULAR SOFA ================= */
-        // Minimalist modular - just cubes, very clean
-        const sofaGroup = new THREE.Group();
+        /* ================= MINIMALIST SEATING (LIVING AREA - LEFT SIDE) ================= */
+        const seatingGroup = new THREE.Group();
 
-        const sofaMat = new THREE.MeshStandardMaterial({
+        const seatingMat = new THREE.MeshStandardMaterial({
             color: new THREE.Color(sofaColor),
             roughness: 0.75
         });
 
-        // Module 1: Left cushion
-        const sofaMod1 = new THREE.Mesh(
-            new THREE.BoxGeometry(1.2, 0.8, 1),
-            sofaMat
+        const seatingPad = new THREE.Mesh(
+            new THREE.BoxGeometry(2.2, 0.5, 0.8),
+            seatingMat
         );
-        sofaMod1.position.set(-1.2, 0.4, 2);
-        sofaMod1.castShadow = true;
+        seatingPad.position.y = 0.35;
+        seatingPad.castShadow = true;
 
-        // Module 2: Center cushion
-        const sofaMod2 = new THREE.Mesh(
-            new THREE.BoxGeometry(1.2, 0.8, 1),
-            sofaMat
+        const backSupport = new THREE.Mesh(
+            new THREE.BoxGeometry(2.2, 0.8, 0.2),
+            seatingMat
         );
-        sofaMod2.position.set(0, 0.4, 2);
-        sofaMod2.castShadow = true;
+        backSupport.position.set(0, 0.85, -0.35);
+        backSupport.castShadow = true;
 
-        // Module 3: Right cushion
-        const sofaMod3 = new THREE.Mesh(
-            new THREE.BoxGeometry(1.2, 0.8, 1),
-            sofaMat
+        const leftArm = new THREE.Mesh(
+            new THREE.BoxGeometry(0.15, 0.5, 0.8),
+            seatingMat
         );
-        sofaMod3.position.set(1.2, 0.4, 2);
-        sofaMod3.castShadow = true;
+        leftArm.position.set(-1.15, 0.35, 0);
+        leftArm.castShadow = true;
 
-        sofaGroup.add(sofaMod1, sofaMod2, sofaMod3);
-        scene.add(sofaGroup);
-        meshesRef.current.sofa = sofaMat;
+        const rightArm = new THREE.Mesh(
+            new THREE.BoxGeometry(0.15, 0.5, 0.8),
+            seatingMat
+        );
+        rightArm.position.set(1.15, 0.35, 0);
+        rightArm.castShadow = true;
 
-        /* ================= MINIMALIST TABLE ================= */
-        // Simple wooden table - no frills
+        seatingGroup.add(seatingPad, backSupport, leftArm, rightArm);
+        seatingGroup.position.set(-3.5, 0, 2);  // LEFT SIDE - Living area
+        scene.add(seatingGroup);
+        meshesRef.current.sofa = seatingMat;
+
+        /* ================= MINIMALIST DINING TABLE (CENTER - FRONT) ================= */
         const tableGroup = new THREE.Group();
 
         const tableMat = new THREE.MeshStandardMaterial({
@@ -178,102 +237,126 @@ export const Room3DMinimalist = ({
             metalness: 0
         });
 
-        // Table top
         const tableTop = new THREE.Mesh(
-            new THREE.BoxGeometry(1, 0.03, 1),
+            new THREE.BoxGeometry(1.2, 0.035, 0.8),
             tableMat
         );
-        tableTop.position.y = 0.45;
+        tableTop.position.y = 0.55;
         tableTop.castShadow = true;
 
-        // Table legs - simple cylinders
         const legMat = new THREE.MeshStandardMaterial({
-            color: new THREE.Color("#888888"),
-            roughness: 0.8
+            color: new THREE.Color("#999999"),
+            roughness: 0.6,
+            metalness: 0.3
         });
 
         const leg1 = new THREE.Mesh(
-            new THREE.CylinderGeometry(0.04, 0.04, 0.45, 8),
+            new THREE.BoxGeometry(0.06, 0.55, 0.06),
             legMat
         );
-        leg1.position.set(-0.4, 0.225, -0.4);
+        leg1.position.set(-0.5, 0.275, -0.32);
         leg1.castShadow = true;
 
         const leg2 = leg1.clone();
-        leg2.position.set(0.4, 0.225, -0.4);
+        leg2.position.set(0.5, 0.275, -0.32);
 
         const leg3 = leg1.clone();
-        leg3.position.set(-0.4, 0.225, 0.4);
+        leg3.position.set(-0.5, 0.275, 0.32);
 
         const leg4 = leg1.clone();
-        leg4.position.set(0.4, 0.225, 0.4);
+        leg4.position.set(0.5, 0.275, 0.32);
 
         tableGroup.add(tableTop, leg1, leg2, leg3, leg4);
-        tableGroup.position.set(0, 0, 0.5);
+        tableGroup.position.set(1, 0, 1.5);  // CENTER-FRONT - Dining/work area
         scene.add(tableGroup);
         meshesRef.current.table = tableMat;
 
-        /* ================= PAPER SHADE LAMP ================= */
+        /* ================= MINIMALIST WALL SHELF (RIGHT WALL) ================= */
+        const shelfGroup = new THREE.Group();
+
+        const shelfMat = new THREE.MeshStandardMaterial({
+            color: new THREE.Color("#d4d4d4"),
+            roughness: 0.75
+        });
+
+        const shelf1 = new THREE.Mesh(
+            new THREE.BoxGeometry(2, 0.04, 0.35),
+            shelfMat
+        );
+        shelf1.position.set(3.5, 2.2, -6.8);
+        shelf1.castShadow = true;
+
+        const shelf2 = shelf1.clone();
+        shelf2.position.y = 1.5;
+
+        const shelf3 = shelf1.clone();
+        shelf3.position.y = 0.8;
+
+        shelfGroup.add(shelf1, shelf2, shelf3);
+        scene.add(shelfGroup);
+
+        /* ================= MINIMALIST PENDANT LAMP (OVER TABLE) ================= */
         const lampGroup = new THREE.Group();
 
         const lampMat = new THREE.MeshStandardMaterial({
             color: new THREE.Color(lampColor),
-            roughness: 0.9,
-            metalness: 0
+            roughness: 0.85,
+            metalness: 0.1
         });
 
-        // Lamp base - simple cylinder
         const lampBase = new THREE.Mesh(
-            new THREE.CylinderGeometry(0.1, 0.1, 0.05, 16),
+            new THREE.CylinderGeometry(0.08, 0.08, 0.03, 12),
             lampMat
         );
-        lampBase.position.y = 0.025;
+        lampBase.position.y = 0.015;
+        lampBase.position.x = 1;
         lampBase.castShadow = true;
 
-        // Lamp pole - thin rod
         const lampPole = new THREE.Mesh(
-            new THREE.CylinderGeometry(0.015, 0.015, 1.2, 12),
+            new THREE.CylinderGeometry(0.008, 0.008, 1.8, 8),
             lampMat
         );
-        lampPole.position.y = 0.65;
+        lampPole.position.y = 0.95;
+        lampPole.position.x = 1;
         lampPole.castShadow = true;
 
-        // Paper shade - simple cone (paper white texture)
         const paperMat = new THREE.MeshStandardMaterial({
-            color: new THREE.Color("#f5f5f5"),
-            roughness: 0.95,
+            color: new THREE.Color("#f8f8f8"),
+            roughness: 0.9,
             side: THREE.DoubleSide
         });
 
-        const shadeGeometry = new THREE.ConeGeometry(0.25, 0.4, 16);
-        const shade = new THREE.Mesh(shadeGeometry, paperMat);
-        shade.position.y = 1.35;
+        const shade = new THREE.Mesh(
+            new THREE.ConeGeometry(0.22, 0.35, 12),
+            paperMat
+        );
+        shade.position.y = 1.8;
+        shade.position.x = 1;
         shade.castShadow = true;
         meshesRef.current.lamp = lampMat;
 
         lampGroup.add(lampBase, lampPole, shade);
-        lampGroup.position.set(-3, 0, 1.5);
+        lampGroup.position.set(1, 0, 1.5);  // OVER TABLE - Lighting for work/dining
         scene.add(lampGroup);
 
         /* ================= LAMP LIGHT ================= */
-        const lampLight = new THREE.PointLight(0xffe8cc, 0.6, 6);
-        lampLight.position.set(-3, 1.5, 1.5);
+        const lampLight = new THREE.PointLight(0xfff5e6, 0.5, 5);
+        lampLight.position.set(1, 1.8, 1.5);
         scene.add(lampLight);
 
-        /* ================= SINGLE PLANT ================= */
-        // One plant for greenery - essential living element
+        /* ================= SINGLE PLANT (LEFT WALL ACCENT) ================= */
         const plantGroup = new THREE.Group();
 
         const potMat = new THREE.MeshStandardMaterial({
-            color: new THREE.Color("#c9b29b"),
+            color: new THREE.Color("#d4d4d4"),
             roughness: 0.8
         });
 
         const pot = new THREE.Mesh(
-            new THREE.CylinderGeometry(0.2, 0.25, 0.35),
+            new THREE.CylinderGeometry(0.18, 0.22, 0.3),
             potMat
         );
-        pot.position.y = 0.175;
+        pot.position.y = 0.15;
         pot.castShadow = true;
 
         const plantMat = new THREE.MeshStandardMaterial({
@@ -281,16 +364,34 @@ export const Room3DMinimalist = ({
         });
 
         const plant = new THREE.Mesh(
-            new THREE.SphereGeometry(0.5, 12, 12),
+            new THREE.SphereGeometry(0.45, 10, 10),
             plantMat
         );
-        plant.position.y = 0.75;
+        plant.position.y = 0.7;
         plant.castShadow = true;
         meshesRef.current.plant = plantMat;
 
         plantGroup.add(pot, plant);
-        plantGroup.position.set(4, 0, -2);
+        plantGroup.position.set(-5.5, 0, 1);  // LEFT WALL - Plant accent
         scene.add(plantGroup);
+
+        /* ================= MINIMALIST MIRROR (WALL DECOR) ================= */
+        const mirrorMat = new THREE.MeshStandardMaterial({
+            color: new THREE.Color("#cccccc"),
+            roughness: 0.3,
+            metalness: 0.6
+        });
+
+        const mirror = new THREE.Mesh(
+            new THREE.CircleGeometry(0.4, 32),
+            mirrorMat
+        );
+        mirror.rotation.y = 0;
+        mirror.position.set(-6.8, 2.5, -4);  // BACK LEFT - Wall accent
+        mirror.position.z = -6.9;
+        mirror.position.x = -5;
+        mirror.receiveShadow = true;
+        scene.add(mirror);
 
         /* ================= ANIMATION ================= */
         const animate = () => {
@@ -348,8 +449,8 @@ export const Room3DMinimalistSchema = z.object({
     accentWallColor: z.string().describe("Accent wall color hex code").optional().default("#f5f5f5"),
     floorColor: z.string().describe("Floor color hex code").optional().default("#e8e8e8"),
     bedColor: z.string().describe("Platform bed color hex code").optional().default("#d0d0d0"),
-    sofaColor: z.string().describe("Modular sofa color hex code").optional().default("#a8a8a8"),
+    sofaColor: z.string().describe("Minimalist bench color hex code").optional().default("#a8a8a8"),
     tableColor: z.string().describe("Minimalist table color hex code").optional().default("#c4a574"),
-    lampColor: z.string().describe("Paper shade lamp color hex code").optional().default("#e0e0e0"),
+    lampColor: z.string().describe("Pendant lamp color hex code").optional().default("#e0e0e0"),
     plantColor: z.string().describe("Plant color hex code").optional().default("#6fa876"),
 });

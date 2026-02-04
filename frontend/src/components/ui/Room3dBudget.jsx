@@ -4,14 +4,18 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 export const Room3DBudget = ({
-    wallColor = "#f0f0f0",
-    accentWallColor = "#e0e0e0",
-    floorColor = "#d4a574",
-    bedColor = "#c0c0c0",
-    sofaColor = "#787878",
-    tableColor = "#a0826d",
-    lampColor = "#d4d4d4",
+    wallColor = "#e6ddd3",
+    accentWallColor = "#c4b29f",
+    floorColor = "#d2b48c",
+    rugColor = "#bfa58a",
+    bedColor = "#f5f5f5",
+    bedBaseColor = "#7a5c43",
+    headboardColor = "#6b4f3a",
+    sofaColor = "#5a5a5a",
+    furnitureColor = "#8a6a4f",
+    lampColor = "#ffd700",
     plantColor = "#5f8f5f",
+    potColor = "#c9b29b",
 }) => {
     const containerRef = useRef(null);
     const meshesRef = useRef({});
@@ -21,7 +25,7 @@ export const Room3DBudget = ({
 
         /* ================= SCENE ================= */
         const scene = new THREE.Scene();
-        scene.background = new THREE.Color("#f5f5f5");
+        scene.background = new THREE.Color("#f3f3f3");
 
         /* ================= CAMERA ================= */
         const width = containerRef.current.clientWidth;
@@ -48,19 +52,22 @@ export const Room3DBudget = ({
         controls.target.set(0, 2.3, -2);
 
         /* ================= LIGHTING ================= */
-        scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+        scene.add(new THREE.AmbientLight(0xffffff, 0.35));
 
-        const sunLight = new THREE.DirectionalLight(0xffffff, 0.9);
+        const sunLight = new THREE.DirectionalLight(0xfff1d6, 1.2);
         sunLight.position.set(6, 8, 4);
         sunLight.castShadow = true;
         scene.add(sunLight);
 
-        /* ================= FLOOR ================= */
-        // Laminate / affordable wood-look floor
+        const coolFill = new THREE.DirectionalLight(0xdde7ff, 0.4);
+        coolFill.position.set(-6, 4, 3);
+        scene.add(coolFill);
+
+        /* ================= FLOOR (WOOD) ================= */
         const floorMat = new THREE.MeshStandardMaterial({
             color: new THREE.Color(floorColor),
-            roughness: 0.8,
-            metalness: 0,
+            roughness: 0.65,
+            metalness: 0.05,
         });
         const floor = new THREE.Mesh(
             new THREE.PlaneGeometry(14, 14),
@@ -71,21 +78,52 @@ export const Room3DBudget = ({
         scene.add(floor);
         meshesRef.current.floor = floorMat;
 
-        /* ================= BUDGET WALLS ================= */
+        /* ================= RUG ================= */
+        const rugMat = new THREE.MeshStandardMaterial({
+            color: new THREE.Color(rugColor),
+            roughness: 0.9,
+        });
+        const rug = new THREE.Mesh(
+            new THREE.PlaneGeometry(4, 5),
+            rugMat
+        );
+        rug.rotation.x = -Math.PI / 2;
+        rug.position.set(1.5, 0.01, -2.5);
+        rug.position.z = -4.2;
+        scene.add(rug);
+        meshesRef.current.rug = rugMat;
+
+        /* ================= WALLS ================= */
         const baseWallMat = new THREE.MeshStandardMaterial({
             color: new THREE.Color(wallColor),
-            roughness: 0.9,
+            roughness: 0.85,
         });
 
         const accentWallMat = new THREE.MeshStandardMaterial({
             color: new THREE.Color(accentWallColor),
-            roughness: 0.88,
+            roughness: 0.8,
+        });
+
+        const trimMat = new THREE.MeshStandardMaterial({
+            color: "#f3eee8",
+            roughness: 0.7,
+        });
+
+        const doorMat = new THREE.MeshStandardMaterial({
+            color: "#8b6b4f",
+            roughness: 0.55,
+        });
+
+        const handleMat = new THREE.MeshStandardMaterial({
+            color: "#c2a46d",
+            metalness: 0.6,
+            roughness: 0.3,
         });
 
         const wallThickness = 0.25;
         const wallHeight = 6;
 
-        // BACK WALL
+        // BACK WALL (ACCENT)
         const backWall = new THREE.Mesh(
             new THREE.BoxGeometry(14, wallHeight, wallThickness),
             accentWallMat
@@ -95,7 +133,27 @@ export const Room3DBudget = ({
         scene.add(backWall);
         meshesRef.current.backWall = accentWallMat;
 
-        // LEFT WALL
+        // BACK WALL TRIMS
+        const panelSpacing = 2.4;
+        const panelWidth = 0.18;
+        const panelDepth = 0.02;
+        const panelHeight = 4.6;
+
+        for (let x = -5.4; x <= 5.4; x += panelSpacing) {
+            const trim = new THREE.Mesh(
+                new THREE.BoxGeometry(panelWidth, panelHeight, panelDepth),
+                trimMat
+            );
+            trim.position.set(
+                x,
+                panelHeight / 2,
+                -7 + panelDepth / 2 - wallThickness
+            );
+            trim.castShadow = true;
+            scene.add(trim);
+        }
+
+        // LEFT WALL (BASE)
         const sideWallDepth = 14;
         const sideWall = new THREE.Mesh(
             new THREE.BoxGeometry(wallThickness, wallHeight, sideWallDepth),
@@ -110,43 +168,110 @@ export const Room3DBudget = ({
         scene.add(sideWall);
         meshesRef.current.leftWall = baseWallMat;
 
-        /* ================= BUDGET BED ================= */
+        // DOOR
+        const doorWidth = 1.4;
+        const doorHeight = 2.8;
+        const doorZ = -2.2;
+        const frameThickness = 0.12;
+
+        const doorGroup = new THREE.Group();
+
+        const frameL = new THREE.Mesh(
+            new THREE.BoxGeometry(frameThickness, doorHeight, 0.18),
+            trimMat
+        );
+        frameL.position.set(-7.01, doorHeight / 2, doorZ - doorWidth / 2);
+
+        const frameR = frameL.clone();
+        frameR.position.z = doorZ + doorWidth / 2;
+
+        const frameT = new THREE.Mesh(
+            new THREE.BoxGeometry(frameThickness, frameThickness, doorWidth + 0.2),
+            trimMat
+        );
+        frameT.position.set(-7.01, doorHeight + frameThickness / 2, doorZ);
+
+        const door = new THREE.Mesh(
+            new THREE.BoxGeometry(1.2, doorHeight - 0.15, 0.06),
+            doorMat
+        );
+        door.position.set(-7 + 0.12, (doorHeight - 0.15) / 2, doorZ);
+        door.position.x = -6.5;
+        door.position.z = -2.8;
+        door.position.y = 1.4;
+        door.castShadow = true;
+
+        const handle = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.035, 0.035, 0.22, 20),
+            handleMat
+        );
+        handle.rotation.z = Math.PI / 2;
+        handle.position.set(-7 + 0.18, doorHeight * 0.45, doorZ + 0.45);
+
+        doorGroup.add(frameL, frameR, frameT, door, handle);
+        scene.add(doorGroup);
+
+        doorGroup.position.x = 0;
+        doorGroup.position.z = 7.2;
+
+        // SOFT WALL GRAZING LIGHT
+        const wallGrazing = new THREE.DirectionalLight(0xffead2, 0.45);
+        wallGrazing.position.set(0, 4, -2);
+        wallGrazing.target.position.set(0, 3, -7);
+        scene.add(wallGrazing, wallGrazing.target);
+
+        /* ================= WINDOW ================= */
+        const windowFrame = new THREE.Mesh(
+            new THREE.BoxGeometry(2.5, 1.6, 0.1),
+            new THREE.MeshStandardMaterial({ color: "#eaeaea" })
+        );
+        windowFrame.position.set(3.5, 3.5, -6.9);
+        scene.add(windowFrame);
+
+        /* ================= BED ================= */
         const bed = new THREE.Group();
 
-        // Simple bed frame
-        const bedMat = new THREE.MeshStandardMaterial({
+        const mattressMat = new THREE.MeshStandardMaterial({
             color: new THREE.Color(bedColor),
-            roughness: 0.7
+            roughness: 0.8
         });
-
         const mattress = new THREE.Mesh(
-            new THREE.BoxGeometry(2.2, 0.35, 2.8),
-            bedMat
+            new THREE.BoxGeometry(2.4, 0.4, 3.2),
+            mattressMat
         );
-        mattress.position.y = 0.5;
-        mattress.position.z = -2;
-        mattress.castShadow = true;
-        meshesRef.current.bed = bedMat;
+        mattress.position.y = 0.6;
+        mattress.position.z = -1.8;
+        meshesRef.current.mattress = mattressMat;
 
-        // Simple frame
-        const frameMat = new THREE.MeshStandardMaterial({
-            color: new THREE.Color("#8b8b8b"),
+        const baseMat = new THREE.MeshStandardMaterial({
+            color: new THREE.Color(bedBaseColor),
             roughness: 0.6
         });
-
-        const frame = new THREE.Mesh(
-            new THREE.BoxGeometry(2.4, 0.15, 3),
-            frameMat
+        const base = new THREE.Mesh(
+            new THREE.BoxGeometry(2.6, 0.4, 3.4),
+            baseMat
         );
-        frame.position.y = 0.08;
-        frame.position.z = -2;
-        frame.castShadow = true;
+        base.position.y = 0.2;
+        base.position.z = -1.7;
+        meshesRef.current.bedBase = baseMat;
 
-        bed.add(mattress, frame);
+        const headboardMat = new THREE.MeshStandardMaterial({
+            color: new THREE.Color(headboardColor)
+        });
+        const headboard = new THREE.Mesh(
+            new THREE.BoxGeometry(2.6, 1.4, 0.2),
+            headboardMat
+        );
+        headboard.position.set(0, 1, -1.7);
+        headboard.position.z = -3.5;
+        meshesRef.current.headboard = headboardMat;
+
+        bed.add(mattress, base, headboard);
         bed.position.set(1.5, 0, -3);
+        bed.traverse(o => (o.castShadow = true));
         scene.add(bed);
 
-        /* ================= BUDGET SOFA ================= */
+        /* ================= SOFA ================= */
         const sofaGroup = new THREE.Group();
 
         const sofaMat = new THREE.MeshStandardMaterial({
@@ -154,165 +279,144 @@ export const Room3DBudget = ({
             roughness: 0.7
         });
 
-        // Simple sofa
-        const sofaBody = new THREE.Mesh(
-            new THREE.BoxGeometry(3.2, 0.8, 1),
+        // Sofa base/frame
+        const sofaBase = new THREE.Mesh(
+            new THREE.BoxGeometry(3.5, 0.4, 1.2),
             sofaMat
         );
-        sofaBody.position.y = 0.5;
-        sofaBody.castShadow = true;
+        sofaBase.position.y = 0.2;
+        sofaBase.castShadow = true;
 
-        // Backrest
-        const sofaBack = new THREE.Mesh(
-            new THREE.BoxGeometry(3.2, 1.2, 0.25),
+        // Sofa cushion/seat
+        const sofaCushion = new THREE.Mesh(
+            new THREE.BoxGeometry(3.4, 0.5, 1),
             sofaMat
         );
-        sofaBack.position.set(0, 1.2, -0.5);
-        sofaBack.castShadow = true;
+        sofaCushion.position.y = 0.65;
+        sofaCushion.castShadow = true;
 
-        // Simple wooden legs
-        const legMat = new THREE.MeshStandardMaterial({
-            color: new THREE.Color("#8b7355"),
-            roughness: 0.6
-        });
-
-        const leg_1 = new THREE.Mesh(
-            new THREE.CylinderGeometry(0.05, 0.05, 0.5, 8),
-            legMat
+        // Sofa backrest
+        const sofaBackrest = new THREE.Mesh(
+            new THREE.BoxGeometry(3.4, 1.2, 0.3),
+            sofaMat
         );
-        leg_1.position.set(-1.5, 0.25, 0.3);
-        leg_1.castShadow = true;
+        sofaBackrest.position.set(0, 1.3, -0.5);
+        sofaBackrest.castShadow = true;
 
-        const leg_2 = leg1.clone();
-        leg_2.position.set(1.5, 0.25, 0.3);
+        // Left armrest
+        const sofaArmL = new THREE.Mesh(
+            new THREE.BoxGeometry(0.3, 0.8, 1),
+            sofaMat
+        );
+        sofaArmL.position.set(-1.8, 0.7, 0);
+        sofaArmL.castShadow = true;
 
-        const leg_3 = leg1.clone();
-        leg_3.position.set(-1.5, 0.25, -0.5);
+        // Right armrest
+        const sofaArmR = sofaArmL.clone();
+        sofaArmR.position.x = 1.8;
 
-        const leg_4 = leg1.clone();
-        leg_4.position.set(1.5, 0.25, -0.5);
-
-        sofaGroup.add(sofaBody, sofaBack, leg1, leg2, leg3, leg4);
-        sofaGroup.position.set(-2, 0, 2);
+        sofaGroup.add(sofaBase, sofaCushion, sofaBackrest, sofaArmL, sofaArmR);
+        sofaGroup.position.set(-2.5, 0, 2);
         scene.add(sofaGroup);
         meshesRef.current.sofa = sofaMat;
 
-        /* ================= BUDGET TABLE ================= */
-        const tableGroup = new THREE.Group();
-
+        /* ================= SIDE TABLE ================= */
         const tableMat = new THREE.MeshStandardMaterial({
-            color: new THREE.Color(tableColor),
-            roughness: 0.75
+            color: new THREE.Color(furnitureColor)
         });
-
-        // Simple wood table top
-        const tableTop = new THREE.Mesh(
-            new THREE.BoxGeometry(1, 0.025, 0.8),
+        const table = new THREE.Mesh(
+            new THREE.BoxGeometry(0.6, 0.5, 0.6),
             tableMat
         );
-        tableTop.position.y = 0.5;
-        tableTop.castShadow = true;
-
-        // Wooden legs
-        const leg1 = new THREE.Mesh(
-            new THREE.BoxGeometry(0.05, 0.5, 0.05),
-            tableMat
-        );
-        leg1.position.set(-0.4, 0.25, -0.3);
-        leg1.castShadow = true;
-
-        const leg2 = leg1.clone();
-        leg2.position.set(0.4, 0.25, -0.3);
-
-        const leg3 = leg1.clone();
-        leg3.position.set(-0.4, 0.25, 0.3);
-
-        const leg4 = leg1.clone();
-        leg4.position.set(0.4, 0.25, 0.3);
-
-        tableGroup.add(tableTop, leg1, leg2, leg3, leg4);
-        tableGroup.position.set(0, 0, 0.8);
-        scene.add(tableGroup);
+        table.position.set(3.2, 0.25, -1.8);
+        table.position.z = -6.1;
+        table.castShadow = true;
+        scene.add(table);
         meshesRef.current.table = tableMat;
 
-        /* ================= BUDGET LAMP ================= */
+        /* ================= LAMP - PROPERLY SHAPED ================= */
         const lampGroup = new THREE.Group();
 
         const lampMat = new THREE.MeshStandardMaterial({
             color: new THREE.Color(lampColor),
-            roughness: 0.8
+            metalness: 0.4,
+            roughness: 0.2
         });
 
-        // Simple base
+        // Lamp base (stand)
         const lampBase = new THREE.Mesh(
-            new THREE.CylinderGeometry(0.12, 0.12, 0.08, 12),
+            new THREE.CylinderGeometry(0.15, 0.2, 0.1, 32),
             lampMat
         );
-        lampBase.position.y = 0.04;
+        lampBase.position.y = 0.05;
+        lampBase.position.z = -4.4;
+        lampBase.position.x = -3.5;
         lampBase.castShadow = true;
 
-        // Simple pole
+        // Lamp pole (vertical rod)
         const lampPole = new THREE.Mesh(
-            new THREE.CylinderGeometry(0.015, 0.015, 1.2, 12),
+            new THREE.CylinderGeometry(0.02, 0.02, 1.5, 16),
             lampMat
         );
-        lampPole.position.y = 0.7;
+        lampPole.position.y = 0.8;
+        lampPole.position.z = -4.4;
+        lampPole.position.x = -3.5;
         lampPole.castShadow = true;
 
-        // Simple shade
-        const shadeMat = new THREE.MeshStandardMaterial({
-            color: new THREE.Color("#f0f0f0"),
-            roughness: 0.85,
-            side: THREE.DoubleSide
-        });
-
-        const shade = new THREE.Mesh(
-            new THREE.ConeGeometry(0.2, 0.3, 12),
-            shadeMat
+        // Lamp head (shade top - cone)
+        const lampShadeTop = new THREE.Mesh(
+            new THREE.ConeGeometry(0.25, 0.4, 32),
+            lampMat
         );
-        shade.position.y = 1.25;
-        shade.castShadow = true;
+        lampShadeTop.position.y = 1.8;
+        lampShadeTop.position.z = -4.4;
+        lampShadeTop.position.x = -3.5;
+        lampShadeTop.castShadow = true;
 
-        lampGroup.add(lampBase, lampPole, shade);
+        // Lamp shade bottom (cylinder)
+        const lampShadeBottom = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.28, 0.25, 0.35, 32),
+            lampMat
+        );
+        lampShadeBottom.position.y = 1.45;
+        lampShadeBottom.position.z = -4.4;
+        lampShadeBottom.position.x = -3.5;
+        lampShadeBottom.castShadow = true;
+
+        lampGroup.add(lampBase, lampPole, lampShadeBottom, lampShadeTop);
         lampGroup.position.set(3.2, 0, -1.8);
         scene.add(lampGroup);
         meshesRef.current.lamp = lampMat;
 
-        /* ================= BUDGET LAMP LIGHT ================= */
-        const lampLight = new THREE.PointLight(0xffffcc, 0.6, 6);
-        lampLight.position.set(3.2, 1.3, -1.8);
+        /* ================= LAMP LIGHT ================= */
+        const lampLight = new THREE.PointLight(0xffddaa, 0.8, 8);
+        lampLight.position.set(3.2, 2, -1.8);
         scene.add(lampLight);
 
-        /* ================= PLANT (Single, Budget-friendly) ================= */
-        const plantGroup = new THREE.Group();
-
+        /* ================= PLANT ================= */
         const potMat = new THREE.MeshStandardMaterial({
-            color: new THREE.Color("#c4a574"),
-            roughness: 0.7
+            color: new THREE.Color(potColor)
         });
-
         const pot = new THREE.Mesh(
-            new THREE.CylinderGeometry(0.2, 0.25, 0.35),
+            new THREE.CylinderGeometry(0.25, 0.3, 0.4),
             potMat
         );
-        pot.position.y = 0.175;
+        pot.position.set(-5.5, 0.2, -2);
         pot.castShadow = true;
+        meshesRef.current.pot = potMat;
 
         const plantMat = new THREE.MeshStandardMaterial({
             color: new THREE.Color(plantColor)
         });
-
         const plant = new THREE.Mesh(
-            new THREE.SphereGeometry(0.5, 12, 12),
+            new THREE.SphereGeometry(0.6, 16, 16),
             plantMat
         );
-        plant.position.y = 0.7;
+        plant.position.set(-5.5, 1, -2);
         plant.castShadow = true;
         meshesRef.current.plant = plantMat;
 
-        plantGroup.add(pot, plant);
-        plantGroup.position.set(-5.5, 0, -2);
-        scene.add(plantGroup);
+        scene.add(pot, plant);
 
         /* ================= ANIMATION ================= */
         const animate = () => {
@@ -346,32 +450,41 @@ export const Room3DBudget = ({
     useEffect(() => {
         if (!meshesRef.current.floor) return;
 
+        // Update colors
         if (meshesRef.current.floor) meshesRef.current.floor.color.setStyle(floorColor);
+        if (meshesRef.current.rug) meshesRef.current.rug.color.setStyle(rugColor);
         if (meshesRef.current.backWall) meshesRef.current.backWall.color.setStyle(accentWallColor);
         if (meshesRef.current.leftWall) meshesRef.current.leftWall.color.setStyle(wallColor);
-        if (meshesRef.current.bed) meshesRef.current.bed.color.setStyle(bedColor);
+        if (meshesRef.current.mattress) meshesRef.current.mattress.color.setStyle(bedColor);
+        if (meshesRef.current.bedBase) meshesRef.current.bedBase.color.setStyle(bedBaseColor);
+        if (meshesRef.current.headboard) meshesRef.current.headboard.color.setStyle(headboardColor);
         if (meshesRef.current.sofa) meshesRef.current.sofa.color.setStyle(sofaColor);
-        if (meshesRef.current.table) meshesRef.current.table.color.setStyle(tableColor);
+        if (meshesRef.current.table) meshesRef.current.table.color.setStyle(furnitureColor);
         if (meshesRef.current.lamp) meshesRef.current.lamp.color.setStyle(lampColor);
+        if (meshesRef.current.pot) meshesRef.current.pot.color.setStyle(potColor);
         if (meshesRef.current.plant) meshesRef.current.plant.color.setStyle(plantColor);
-    }, [wallColor, accentWallColor, floorColor, bedColor, sofaColor, tableColor, lampColor, plantColor]);
+    }, [wallColor, accentWallColor, floorColor, rugColor, bedColor, bedBaseColor, headboardColor, sofaColor, furnitureColor, lampColor, plantColor, potColor]);
 
     return (
         <div
             ref={containerRef}
             style={{ height: "600px" }}
-            className="w-full rounded-xl overflow-hidden shadow-xl border border-gray-200"
+            className="w-full rounded-xl overflow-hidden shadow-xl border"
         />
     );
 };
 
 export const Room3DBudgetSchema = z.object({
-    wallColor: z.string().describe("Wall color hex code").optional().default("#f0f0f0"),
-    accentWallColor: z.string().describe("Accent wall color hex code").optional().default("#e0e0e0"),
-    floorColor: z.string().describe("Floor color hex code").optional().default("#d4a574"),
-    bedColor: z.string().describe("Bed color hex code").optional().default("#c0c0c0"),
-    sofaColor: z.string().describe("Sofa color hex code").optional().default("#787878"),
-    tableColor: z.string().describe("Table color hex code").optional().default("#a0826d"),
-    lampColor: z.string().describe("Lamp color hex code").optional().default("#d4d4d4"),
+    wallColor: z.string().describe("Wall color hex code").optional().default("#e6ddd3"),
+    accentWallColor: z.string().describe("Accent wall color hex code").optional().default("#c4b29f"),
+    floorColor: z.string().describe("Floor color hex code").optional().default("#d2b48c"),
+    rugColor: z.string().describe("Rug color hex code").optional().default("#bfa58a"),
+    bedColor: z.string().describe("Bed mattress color hex code").optional().default("#f5f5f5"),
+    bedBaseColor: z.string().describe("Bed base color hex code").optional().default("#7a5c43"),
+    headboardColor: z.string().describe("Headboard color hex code").optional().default("#6b4f3a"),
+    sofaColor: z.string().describe("Sofa color hex code").optional().default("#5a5a5a"),
+    furnitureColor: z.string().describe("Side table color hex code").optional().default("#8a6a4f"),
+    lampColor: z.string().describe("Lamp color hex code").optional().default("#ffd700"),
     plantColor: z.string().describe("Plant color hex code").optional().default("#5f8f5f"),
+    potColor: z.string().describe("Pot color hex code").optional().default("#c9b29b"),
 });
