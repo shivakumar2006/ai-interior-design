@@ -131,7 +131,7 @@ function App() {
                                             "Design a modern minimalist bedroom. Budget: $2000. Include 3D room visualization, furniture suggestions, color palette, and complete layout recommendation."
                                         )
                                     }
-                                    className="group px-8 py-3.5 bg-gray-950 text-white rounded-lg font-medium text-sm hover:bg-gray-800 transition flex items-center justify-center gap-2 mx-auto"
+                                    className="group px-8 py-3.5 bg-gray-950 text-white rounded-lg font-medium text-sm hover:bg-gray-800 transition flex items-center justify-center gap-2 mx-auto cursor-pointer"
                                 >
                                     Generate Design
                                     <ChevronRight size={16} className="group-hover:translate-x-1 transition" />

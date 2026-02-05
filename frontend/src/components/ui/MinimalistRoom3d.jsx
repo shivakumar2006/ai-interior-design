@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { z } from "zod";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
@@ -15,6 +15,27 @@ export const Room3DMinimalist = ({
 }) => {
     const containerRef = useRef(null);
     const meshesRef = useRef({});
+    const groupsRef = useRef({}); // Store furniture groups
+
+    // ===== FURNITURE VISIBILITY STATE =====
+    const [furnitureVisibility, setFurnitureVisibility] = useState({
+        bed: true,
+        sofa: true,
+        table: true,
+        lamp: true,
+        plant: true,
+        door: true,
+        shelves: true,
+        mirror: true,
+    });
+
+    // ===== TOGGLE FURNITURE =====
+    const toggleFurniture = (furnitureType) => {
+        setFurnitureVisibility(prev => ({
+            ...prev,
+            [furnitureType]: !prev[furnitureType]
+        }));
+    };
 
     useEffect(() => {
         if (!containerRef.current) return;
@@ -109,7 +130,7 @@ export const Room3DMinimalist = ({
         scene.add(sideWall);
         meshesRef.current.leftWall = baseWallMat;
 
-        /* ================= MINIMALIST DOOR ================= */
+        /* ================= MINIMALIST DOOR (TOGGLEABLE) ================= */
         const doorGroup = new THREE.Group();
 
         const doorFrameMat = new THREE.MeshStandardMaterial({
@@ -166,8 +187,9 @@ export const Room3DMinimalist = ({
 
         doorGroup.add(doorFrameL, doorFrameR, doorFrameT, door, handle);
         scene.add(doorGroup);
+        groupsRef.current.door = doorGroup;
 
-        /* ================= MINIMALIST BED (SLEEPING AREA - BACK LEFT) ================= */
+        /* ================= MINIMALIST BED (TOGGLEABLE - SLEEPING AREA - BACK LEFT) ================= */
         const bed = new THREE.Group();
 
         const bedMat = new THREE.MeshStandardMaterial({
@@ -184,10 +206,11 @@ export const Room3DMinimalist = ({
         meshesRef.current.bed = bedMat;
 
         bed.add(platform);
-        bed.position.set(-4.5, 0, -4);  // BACK LEFT CORNER - Sleeping area
+        bed.position.set(-4.5, 0, -4);
         scene.add(bed);
+        groupsRef.current.bed = bed;
 
-        /* ================= MINIMALIST SEATING (LIVING AREA - LEFT SIDE) ================= */
+        /* ================= MINIMALIST SEATING (TOGGLEABLE - LIVING AREA - LEFT SIDE) ================= */
         const seatingGroup = new THREE.Group();
 
         const seatingMat = new THREE.MeshStandardMaterial({
@@ -224,11 +247,12 @@ export const Room3DMinimalist = ({
         rightArm.castShadow = true;
 
         seatingGroup.add(seatingPad, backSupport, leftArm, rightArm);
-        seatingGroup.position.set(-3.5, 0, 2);  // LEFT SIDE - Living area
+        seatingGroup.position.set(-3.5, 0, 2);
         scene.add(seatingGroup);
+        groupsRef.current.sofa = seatingGroup;
         meshesRef.current.sofa = seatingMat;
 
-        /* ================= MINIMALIST DINING TABLE (CENTER - FRONT) ================= */
+        /* ================= MINIMALIST DINING TABLE (TOGGLEABLE - CENTER - FRONT) ================= */
         const tableGroup = new THREE.Group();
 
         const tableMat = new THREE.MeshStandardMaterial({
@@ -267,11 +291,12 @@ export const Room3DMinimalist = ({
         leg4.position.set(0.5, 0.275, 0.32);
 
         tableGroup.add(tableTop, leg1, leg2, leg3, leg4);
-        tableGroup.position.set(1, 0, 1.5);  // CENTER-FRONT - Dining/work area
+        tableGroup.position.set(1, 0, 1.5);
         scene.add(tableGroup);
+        groupsRef.current.table = tableGroup;
         meshesRef.current.table = tableMat;
 
-        /* ================= MINIMALIST WALL SHELF (RIGHT WALL) ================= */
+        /* ================= MINIMALIST WALL SHELF (TOGGLEABLE - RIGHT WALL) ================= */
         const shelfGroup = new THREE.Group();
 
         const shelfMat = new THREE.MeshStandardMaterial({
@@ -294,8 +319,9 @@ export const Room3DMinimalist = ({
 
         shelfGroup.add(shelf1, shelf2, shelf3);
         scene.add(shelfGroup);
+        groupsRef.current.shelves = shelfGroup;
 
-        /* ================= MINIMALIST PENDANT LAMP (OVER TABLE) ================= */
+        /* ================= MINIMALIST PENDANT LAMP (TOGGLEABLE - OVER TABLE) ================= */
         const lampGroup = new THREE.Group();
 
         const lampMat = new THREE.MeshStandardMaterial({
@@ -309,7 +335,6 @@ export const Room3DMinimalist = ({
             lampMat
         );
         lampBase.position.y = 0.015;
-        lampBase.position.x = 1;
         lampBase.castShadow = true;
 
         const lampPole = new THREE.Mesh(
@@ -317,7 +342,6 @@ export const Room3DMinimalist = ({
             lampMat
         );
         lampPole.position.y = 0.95;
-        lampPole.position.x = 1;
         lampPole.castShadow = true;
 
         const paperMat = new THREE.MeshStandardMaterial({
@@ -331,20 +355,20 @@ export const Room3DMinimalist = ({
             paperMat
         );
         shade.position.y = 1.8;
-        shade.position.x = 1;
         shade.castShadow = true;
         meshesRef.current.lamp = lampMat;
 
         lampGroup.add(lampBase, lampPole, shade);
-        lampGroup.position.set(1, 0, 1.5);  // OVER TABLE - Lighting for work/dining
+        lampGroup.position.set(1, 0, 1.5);
         scene.add(lampGroup);
+        groupsRef.current.lamp = lampGroup;
 
         /* ================= LAMP LIGHT ================= */
         const lampLight = new THREE.PointLight(0xfff5e6, 0.5, 5);
         lampLight.position.set(1, 1.8, 1.5);
         scene.add(lampLight);
 
-        /* ================= SINGLE PLANT (LEFT WALL ACCENT) ================= */
+        /* ================= SINGLE PLANT (TOGGLEABLE - LEFT WALL ACCENT) ================= */
         const plantGroup = new THREE.Group();
 
         const potMat = new THREE.MeshStandardMaterial({
@@ -372,10 +396,11 @@ export const Room3DMinimalist = ({
         meshesRef.current.plant = plantMat;
 
         plantGroup.add(pot, plant);
-        plantGroup.position.set(-5.5, 0, 1);  // LEFT WALL - Plant accent
+        plantGroup.position.set(-5.5, 0, 1);
         scene.add(plantGroup);
+        groupsRef.current.plant = plantGroup;
 
-        /* ================= MINIMALIST MIRROR (WALL DECOR) ================= */
+        /* ================= MINIMALIST MIRROR (TOGGLEABLE - WALL DECOR) ================= */
         const mirrorMat = new THREE.MeshStandardMaterial({
             color: new THREE.Color("#cccccc"),
             roughness: 0.3,
@@ -387,11 +412,10 @@ export const Room3DMinimalist = ({
             mirrorMat
         );
         mirror.rotation.y = 0;
-        mirror.position.set(-6.8, 2.5, -4);  // BACK LEFT - Wall accent
-        mirror.position.z = -6.9;
-        mirror.position.x = -5;
+        mirror.position.set(-5, 2.5, -6.9);
         mirror.receiveShadow = true;
         scene.add(mirror);
+        groupsRef.current.mirror = mirror;
 
         /* ================= ANIMATION ================= */
         const animate = () => {
@@ -421,6 +445,15 @@ export const Room3DMinimalist = ({
         };
     }, []);
 
+    // ===== HANDLE FURNITURE VISIBILITY =====
+    useEffect(() => {
+        Object.keys(furnitureVisibility).forEach(key => {
+            if (groupsRef.current[key]) {
+                groupsRef.current[key].visible = furnitureVisibility[key];
+            }
+        });
+    }, [furnitureVisibility]);
+
     // ================= COLOR SYNC EFFECT =================
     useEffect(() => {
         if (!meshesRef.current.floor) return;
@@ -436,11 +469,33 @@ export const Room3DMinimalist = ({
     }, [wallColor, accentWallColor, floorColor, bedColor, sofaColor, tableColor, lampColor, plantColor]);
 
     return (
-        <div
-            ref={containerRef}
-            style={{ height: "600px" }}
-            className="w-full rounded-xl overflow-hidden shadow-xl border border-gray-200"
-        />
+        <div className="w-full">
+            {/* FURNITURE TOGGLE BUTTONS */}
+            <div className="bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-300 p-4 rounded-t-xl">
+                <h3 className="text-sm font-bold text-gray-800 mb-3">🛋️ Furniture Controls</h3>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                    {Object.entries(furnitureVisibility).map(([key, isVisible]) => (
+                        <button
+                            key={key}
+                            onClick={() => toggleFurniture(key)}
+                            className={`px-3 py-2 rounded text-xs font-semibold transition-all ${isVisible
+                                ? "bg-green-500 text-white shadow-lg"
+                                : "bg-gray-300 text-gray-700 opacity-60"
+                                }`}
+                        >
+                            {isVisible ? "✓" : "○"} {key.charAt(0).toUpperCase() + key.slice(1)}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            {/* 3D ROOM */}
+            <div
+                ref={containerRef}
+                style={{ height: "600px" }}
+                className="w-full shadow-xl border-b border-gray-200"
+            />
+        </div>
     );
 };
 
