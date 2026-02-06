@@ -1,6 +1,7 @@
 import { useTamboThread } from "@tambo-ai/react";
 import { useState, useMemo, useEffect } from "react";
 import { Send, ChevronRight, Sparkles } from "lucide-react";
+import StyledComponents from "./components/StyledComponents";
 import "./App.css";
 
 function App() {
@@ -218,10 +219,11 @@ function App() {
                                         )}
                                     </div>
                                 ) : (
-                                    <div className="text-center py-12">
-                                        <p className="text-gray-400 font-light">
+                                    <div className="w-full mt-50 flex justify-center items-center text-center py-12">
+                                        <StyledComponents />
+                                        {/* <p className="text-gray-400 font-light">
                                             Waiting for design…
-                                        </p>
+                                        </p> */}
                                     </div>
                                 )}
                             </div>

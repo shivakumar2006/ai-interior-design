@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { z } from "zod";
 import * as THREE from "three";
+import ButtonWrapper from "../ButtonWrapper";
 import { toast, Bounce } from "react-toastify";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { GLTFExporter } from "three/examples/jsm/exporters/GLTFExporter.js";
@@ -309,6 +310,7 @@ export const Room3DMinimalist = ({
 
         seatingGroup.add(seatingPad, backSupport, leftArm, rightArm);
         seatingGroup.position.set(-3.5, 0, 2);
+        seatingGroup.rotation.y = Math.PI / 2;
         scene.add(seatingGroup);
         groupsRef.current.sofa = seatingGroup;
         meshesRef.current.sofa = seatingMat;
@@ -421,6 +423,7 @@ export const Room3DMinimalist = ({
 
         lampGroup.add(lampBase, lampPole, shade);
         lampGroup.position.set(1, 0, 1.5);
+        lampGroup.position.x = 2.5;
         scene.add(lampGroup);
         groupsRef.current.lamp = lampGroup;
 
@@ -530,46 +533,137 @@ export const Room3DMinimalist = ({
     }, [wallColor, accentWallColor, floorColor, bedColor, sofaColor, tableColor, lampColor, plantColor]);
 
     return (
-        <div className="w-full">
-            {/* FURNITURE TOGGLE BUTTONS */}
-            <div className="bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-300 p-4 rounded-t-xl">
-                <h3 className="text-sm font-bold text-gray-800 mb-3">🛋️ Furniture Controls</h3>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+        <div className="w-full bg-gradient-to-b from-white to-gray-50">
+            {/* ===== FURNITURE TOGGLE BUTTONS - ENHANCED ===== */}
+            <div className="bg-gradient-to-r from-slate-50 via-blue-50 to-purple-50 border-b border-gray-200 p-6 rounded-t-2xl">
+                {/* HEADER SECTION */}
+                <div className="mb-6">
+                    <div className="flex items-center gap-3 mb-2">
+                        <span className="text-2xl">🛋️</span>
+                        <h3 className="text-lg font-bold text-gray-900 tracking-tight">Furniture Controls</h3>
+                        <span className="ml-auto text-xs font-semibold text-purple-600 bg-purple-100 px-3 py-1 rounded-full">
+                            {Object.values(furnitureVisibility).filter(Boolean).length}/{Object.keys(furnitureVisibility).length} Active
+                        </span>
+                    </div>
+                    <p className="text-sm text-gray-600 font-light">Toggle furniture items to customize your design</p>
+                </div>
+
+                {/* FURNITURE GRID */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
                     {Object.entries(furnitureVisibility).map(([key, isVisible]) => (
-                        <button
+                        <div
                             key={key}
-                            onClick={() => toggleFurniture(key)}
-                            className={`px-3 py-2 rounded text-xs font-semibold transition-all ${isVisible
-                                ? "bg-green-500 text-white shadow-lg"
-                                : "bg-gray-300 text-gray-700 opacity-60"
-                                }`}
+                            className={`group flex items-center justify-between p-4 rounded-xl transition-all duration-300 cursor-pointer
+                            ${isVisible
+                                    ? 'bg-gradient-to-r from-purple-50 to-pink-50 border-2 border-purple-300 shadow-md hover:shadow-lg'
+                                    : 'bg-white border-2 border-gray-200 hover:border-gray-300 shadow-sm hover:shadow-md'
+                                }
+                        `}
                         >
-                            {isVisible ? "✓" : "○"} {key.charAt(0).toUpperCase() + key.slice(1)}
-                        </button>
+                            {/* LABEL */}
+                            <div className="flex items-center gap-3 flex-1">
+                                <div className={`w-2 h-2 rounded-full transition-all duration-300
+                                ${isVisible ? 'bg-purple-500 shadow-md shadow-purple-500' : 'bg-gray-300'}
+                            `}></div>
+                                <p className={`text-sm font-semibold transition-colors duration-300
+                                ${isVisible ? 'text-purple-900' : 'text-gray-700'}
+                            `}>
+                                    {key.charAt(0).toUpperCase() + key.slice(1)}
+                                </p>
+                            </div>
+
+                            {/* TOGGLE SWITCH */}
+                            <ButtonWrapper
+                                id={`furniture-toggle-${key}`}
+                                checked={isVisible}
+                                onChange={() => toggleFurniture(key)}
+                            />
+                        </div>
                     ))}
+                </div>
+
+                {/* INFO TEXT */}
+                <div className="mt-5 p-3 bg-blue-50/50 border border-blue-200 rounded-lg">
+                    <p className="text-xs text-blue-700 font-medium">
+                        💡 Tip: Toggle furniture items to see real-time changes in your 3D room design
+                    </p>
                 </div>
             </div>
 
-            {/* 3D ROOM */}
-            <div
-                ref={containerRef}
-                style={{ height: "600px" }}
-                className="w-full shadow-xl border-b border-gray-200"
-            />
+            {/* ===== 3D ROOM - ENHANCED ===== */}
+            <div className="relative">
+                {/* LOADING OVERLAY */}
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white/10 pointer-events-none z-10 rounded-none"></div>
 
-            {/* EXPORT BUTTONS BAR */}
-            <div className="bg-gradient-to-r from-purple-50 to-blue-50 border-t border-gray-300 p-4 rounded-b-xl">
-                <h3 className="text-sm font-bold text-gray-800 mb-3">📥 Export Options</h3>
-                <div className="flex flex-wrap gap-3">
-                    <button
-                        onClick={exportToGLB}
-                        className="bg-purple-500 hover:bg-purple-600 text-white px-6 py-2 rounded-lg font-semibold transition-all shadow-lg hover:shadow-xl flex items-center gap-2 cursor-pointer"
-                    >
-                        📦 Export 3D Model (.GLB)
-                    </button>
-                    <p className="text-xs text-gray-600 flex items-center">
-                        Open in Blender or any 3D viewer
-                    </p>
+                <div
+                    ref={containerRef}
+                    style={{ height: "600px" }}
+                    className="w-full shadow-xl border-b border-gray-300 relative"
+                />
+
+                {/* ROOM INFO OVERLAY */}
+                <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-lg shadow-lg z-20">
+                    <p className="text-xs font-semibold text-gray-700">🎨 3D Room Preview</p>
+                    <p className="text-xs text-gray-600 mt-0.5">Drag to rotate • Scroll to zoom</p>
+                </div>
+            </div>
+
+            {/* ===== EXPORT OPTIONS - ENHANCED ===== */}
+            <div className="bg-gradient-to-r from-purple-50 via-pink-50 to-blue-50 border-t border-gray-200 p-6 rounded-b-2xl">
+                {/* HEADER */}
+                <div className="mb-6">
+                    <div className="flex items-center gap-3 mb-2">
+                        <span className="text-2xl">📥</span>
+                        <h3 className="text-lg font-bold text-gray-900 tracking-tight">Export Options</h3>
+                    </div>
+                    <p className="text-sm text-gray-600 font-light">Save your design for further editing or sharing</p>
+                </div>
+
+                {/* EXPORT BUTTONS */}
+                <div className="space-y-3">
+                    {/* PRIMARY EXPORT BUTTON */}
+                    <div className="relative group">
+                        <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500 rounded-lg blur opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
+                        <button
+                            onClick={exportToGLB}
+                            className="relative w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-6 py-4 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-2xl flex items-center justify-center gap-3 group/btn active:scale-95"
+                        >
+                            <span className="text-xl group-hover/btn:scale-110 transition-transform duration-300">📦</span>
+                            <div className="text-left">
+                                <p className="font-bold">Export 3D Model (.GLB)</p>
+                                <p className="text-xs text-purple-100 font-light">Open in Blender or any 3D viewer</p>
+                            </div>
+                            <span className="ml-auto text-sm font-light opacity-75 group-hover/btn:opacity-100">→</span>
+                        </button>
+                    </div>
+
+                    {/* INFO CARDS */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-5">
+                        {[
+                            { icon: '🎨', title: 'Professional', desc: 'Industry-standard GLB format' },
+                            { icon: '🖨️', title: '3D Print Ready', desc: 'Print your design in real-world' },
+                            { icon: '✏️', title: 'Fully Editable', desc: 'Modify in Blender or other tools' }
+                        ].map((feature, idx) => (
+                            <div
+                                key={idx}
+                                className="p-3 bg-white/70 backdrop-blur-sm border border-gray-200 rounded-lg hover:border-purple-300 hover:bg-white/90 transition-all duration-300 cursor-default"
+                            >
+                                <p className="text-lg mb-1">{feature.icon}</p>
+                                <p className="text-xs font-semibold text-gray-900">{feature.title}</p>
+                                <p className="text-xs text-gray-600 font-light mt-0.5">{feature.desc}</p>
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* QUICK TIPS */}
+                    <div className="mt-5 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg">
+                        <p className="text-xs font-semibold text-blue-900 mb-2">💻 Quick Tips:</p>
+                        <ul className="text-xs text-blue-800 space-y-1">
+                            <li>✓ Click export button to download 3D model</li>
+                            <li>✓ Open downloaded .glb file in Blender</li>
+                            <li>✓ Use for rendering, 3D printing, or further editing</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
