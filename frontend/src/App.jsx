@@ -40,6 +40,31 @@ function App() {
         setDesignStep("viewing");
     };
 
+    // Template prompts for quick design changes
+    const designTemplates = [
+        {
+            label: "✨ Modern Minimalist",
+            prompt: "Change to modern minimalist design with clean lines, neutral colors, and minimal furniture. Keep the 3D view and budget calculation, show me budget first of it and when i say yes then show me the color palettes chosen by you and let me choose those as well and then show me the room interior."
+        },
+        {
+            label: "👑 Luxury Style",
+            prompt: "Transform into luxury design with premium materials, gold accents, velvet textures, and high-end furniture, show me budget first of it and when i say yes then show me the color palettes chosen by you and let me choose those as well and then show me the room interior."
+        },
+        {
+            label: "💰 Budget-Friendly",
+            prompt: "Redesign as budget-friendly with affordable furniture, smart choices, and value-conscious styling. Keep quality high but prices low, show me budget first of it and when i say yes then show me the color palettes chosen by you and let me choose those as well and then show me the room interior."
+        },
+        {
+            label: "💼 Professional Office",
+            prompt: "Transform into professional home office with productivity focus, ergonomic furniture, organized layout, and professional aesthetic."
+        }
+    ];
+
+    const handleTemplateClick = (prompt) => {
+        sendThreadMessage(prompt);
+        setDesignStep("viewing");
+    };
+
     // Helper to safely render message content
     const renderMessageContent = (content) => {
         if (!content) return "";
@@ -263,6 +288,23 @@ function App() {
                                 </div>
                             </div>
                         )}
+                    </div>
+
+                    {/* TEMPLATES SECTION */}
+                    <div className="border-t border-gray-100/80 px-4 py-3 space-y-2 bg-white/50">
+                        <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide">Quick Prompts</p>
+                        <div className="space-y-1.5">
+                            {designTemplates.map((template, idx) => (
+                                <button
+                                    key={idx}
+                                    onClick={() => handleTemplateClick(template.prompt)}
+                                    disabled={isLoading}
+                                    className="w-full text-left px-3 py-2 text-xs font-light text-gray-700 bg-white hover:bg-purple-50 border border-gray-100 hover:border-purple-200 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    {template.label}
+                                </button>
+                            ))}
+                        </div>
                     </div>
 
                     {/* INPUT */}
