@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { z } from "zod";
 import * as THREE from "three";
+import { toast, Bounce } from "react-toastify";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { GLTFExporter } from "three/examples/jsm/exporters/GLTFExporter.js";
 
 export const Room3DBudget = ({
     wallColor = "#e6ddd3",
@@ -20,6 +22,8 @@ export const Room3DBudget = ({
     const containerRef = useRef(null);
     const meshesRef = useRef({});
     const groupsRef = useRef({}); // Store furniture groups
+    const sceneRef = useRef(null);
+
 
     // ===== FURNITURE VISIBILITY STATE =====
     const [furnitureVisibility, setFurnitureVisibility] = useState({
@@ -41,12 +45,78 @@ export const Room3DBudget = ({
         }));
     };
 
+    const exportToGLB = () => {
+        if (!sceneRef.current) {
+            alert("❌ Scene not ready. Please wait and try again.");
+            return;
+        }
+
+        const exporter = new GLTFExporter();
+
+        exporter.parse(
+            sceneRef.current,
+            (result) => {
+                let blob;
+
+                // ✅ If binary export => ArrayBuffer comes
+                if (result instanceof ArrayBuffer) {
+                    blob = new Blob([result], { type: "model/gltf-binary" });
+                } else {
+                    // fallback JSON export
+                    const json = JSON.stringify(result, null, 2);
+                    blob = new Blob([json], { type: "application/json" });
+                }
+
+                const url = URL.createObjectURL(blob);
+
+                const link = document.createElement("a");
+                link.href = url;
+                link.download = `room_budget_${Date.now()}.glb`;
+
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                URL.revokeObjectURL(url);
+
+                toast('Export successfully ✅', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: false,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                    transition: Bounce,
+                });
+            },
+            (error) => {
+                console.error("Export error:", error);
+                toast.error("Export failed ❌", {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: false,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                    transition: Bounce,
+                })
+            },
+            { binary: true }
+        );
+    };
+
     useEffect(() => {
         if (!containerRef.current) return;
 
         /* ================= SCENE ================= */
         const scene = new THREE.Scene();
         scene.background = new THREE.Color("#f3f3f3");
+
+        sceneRef.current = scene;
 
         /* ================= CAMERA ================= */
         const width = containerRef.current.clientWidth;
@@ -511,6 +581,22 @@ export const Room3DBudget = ({
                 style={{ height: "600px" }}
                 className="w-full shadow-xl border-b border-orange-200"
             />
+
+            {/* EXPORT BUTTONS BAR */}
+            <div className="bg-gradient-to-r from-purple-50 to-blue-50 border-t border-gray-300 p-4 rounded-b-xl">
+                <h3 className="text-sm font-bold text-gray-800 mb-3">📥 Export Options</h3>
+                <div className="flex flex-wrap gap-3">
+                    <button
+                        onClick={exportToGLB}
+                        className="bg-purple-500 hover:bg-purple-600 text-white px-6 py-2 rounded-lg font-semibold transition-all shadow-lg hover:shadow-xl flex items-center gap-2 cursor-pointer"
+                    >
+                        📦 Export 3D Model (.GLB)
+                    </button>
+                    <p className="text-xs text-gray-600 flex items-center">
+                        Open in Blender or any 3D viewer
+                    </p>
+                </div>
+            </div>
         </div>
     );
 };

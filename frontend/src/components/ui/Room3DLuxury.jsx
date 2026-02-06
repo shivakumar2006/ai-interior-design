@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { z } from "zod";
 import * as THREE from "three";
+import { toast, Bounce } from "react-toastify";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { GLTFExporter } from "three/examples/jsm/exporters/GLTFExporter";
 
@@ -76,11 +77,31 @@ export const Room3DLuxury = ({
 
                 URL.revokeObjectURL(url);
 
-                alert("✅ Exported successfully!");
+                toast('Export successfully ✅', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: false,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                    transition: Bounce,
+                });
             },
             (error) => {
                 console.error("Export error:", error);
-                alert("❌ Export failed.");
+                toast.error("Export failed ❌", {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: false,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                    transition: Bounce,
+                })
             },
             { binary: true }
         );
@@ -862,7 +883,7 @@ export const Room3DLuxury = ({
                 <div className="flex flex-wrap gap-3">
                     <button
                         onClick={exportToGLB}
-                        className="bg-purple-500 hover:bg-purple-600 text-white px-6 py-2 rounded-lg font-semibold transition-all shadow-lg hover:shadow-xl flex items-center gap-2"
+                        className="bg-purple-500 hover:bg-purple-600 text-white px-6 py-2 rounded-lg font-semibold transition-all shadow-lg hover:shadow-xl flex items-center gap-2 cursor-pointer"
                     >
                         📦 Export 3D Model (.GLB)
                     </button>
