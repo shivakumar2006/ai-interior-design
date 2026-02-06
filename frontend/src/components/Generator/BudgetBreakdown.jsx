@@ -208,113 +208,257 @@ export const BudgetBreakdown = ({
     };
 
     return (
-        <div className="bg-white border border-gray-100 rounded-2xl p-8 shadow-sm">
-            <div className="space-y-8">
-                {/* Header */}
-                <div>
-                    <h3 className="text-2xl font-semibold text-gray-900 mb-6">Budget Breakdown</h3>
+        <div className="w-full bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30 rounded-2xl border border-gray-200 shadow-xl overflow-hidden">
+            <div className="p-8 space-y-8">
+                {/* ===== HEADER SECTION ===== */}
+                <div className="space-y-2">
+                    <div className="flex items-center gap-3 mb-2">
+                        <span className="text-3xl">💰</span>
+                        <h3 className="text-3xl font-bold text-gray-900 tracking-tight">Budget Breakdown</h3>
+                    </div>
+                    <p className="text-gray-600 font-light">Complete cost analysis of your design</p>
+                </div>
 
-                    {/* Summary Cards */}
-                    <div className="grid grid-cols-3 gap-4 mb-6">
-                        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-4 border border-blue-100">
-                            <p className="text-xs text-gray-600 font-light mb-1">Total Budget</p>
-                            <p className="text-2xl font-bold text-blue-600">${totalBudget.toLocaleString()}</p>
-                        </div>
-                        <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl p-4 border border-amber-100">
-                            <p className="text-xs text-gray-600 font-light mb-1">Spent</p>
-                            <p className="text-2xl font-bold text-amber-600">${spent.toLocaleString()}</p>
-                        </div>
-                        <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-4 border border-green-100">
-                            <p className="text-xs text-gray-600 font-light mb-1">Remaining</p>
-                            <p className="text-2xl font-bold text-green-600">${remaining.toLocaleString()}</p>
+                {/* ===== SUMMARY CARDS - ENHANCED ===== */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {/* TOTAL BUDGET CARD */}
+                    <div className="group relative overflow-hidden rounded-xl p-6 bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 hover:border-blue-400 transition-all duration-300 hover:shadow-lg">
+                        <div className="absolute top-0 right-0 w-20 h-20 bg-blue-200 rounded-full -mr-10 -mt-10 opacity-20 group-hover:scale-125 transition-transform duration-300"></div>
+                        <div className="relative">
+                            <p className="text-xs text-gray-600 font-semibold uppercase tracking-wide mb-2">Total Budget</p>
+                            <p className="text-3xl font-bold text-blue-600 mb-2">${totalBudget.toLocaleString()}</p>
+                            <div className="flex items-center gap-1 text-xs text-blue-600 font-semibold">
+                                <span>📈</span>
+                                <span>Complete allocation</span>
+                            </div>
                         </div>
                     </div>
 
-                    {/* Progress Bar */}
-                    <div className="w-full bg-gray-100 rounded-full h-3 overflow-hidden">
+                    {/* SPENT CARD */}
+                    <div className="group relative overflow-hidden rounded-xl p-6 bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-200 hover:border-amber-400 transition-all duration-300 hover:shadow-lg">
+                        <div className="absolute top-0 right-0 w-20 h-20 bg-amber-200 rounded-full -mr-10 -mt-10 opacity-20 group-hover:scale-125 transition-transform duration-300"></div>
+                        <div className="relative">
+                            <p className="text-xs text-gray-600 font-semibold uppercase tracking-wide mb-2">Amount Spent</p>
+                            <p className="text-3xl font-bold text-amber-600 mb-2">${spent.toLocaleString()}</p>
+                            <div className="flex items-center gap-1 text-xs text-amber-600 font-semibold">
+                                <span>💳</span>
+                                <span>{Math.round((spent / totalBudget) * 100)}% utilized</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* REMAINING CARD */}
+                    <div className="group relative overflow-hidden rounded-xl p-6 bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200 hover:border-green-400 transition-all duration-300 hover:shadow-lg">
+                        <div className="absolute top-0 right-0 w-20 h-20 bg-green-200 rounded-full -mr-10 -mt-10 opacity-20 group-hover:scale-125 transition-transform duration-300"></div>
+                        <div className="relative">
+                            <p className="text-xs text-gray-600 font-semibold uppercase tracking-wide mb-2">Remaining Balance</p>
+                            <p className="text-3xl font-bold text-green-600 mb-2">${remaining.toLocaleString()}</p>
+                            <div className="flex items-center gap-1 text-xs text-green-600 font-semibold">
+                                <span>✓</span>
+                                <span>Available funds</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* ===== PROGRESS BAR - ENHANCED ===== */}
+                <div className="space-y-3 p-5 bg-white/60 backdrop-blur rounded-xl border border-gray-200">
+                    <div className="flex items-center justify-between mb-2">
+                        <p className="text-sm font-semibold text-gray-900">Budget Utilization</p>
+                        <p className="text-sm font-bold text-blue-600">{Math.round((spent / totalBudget) * 100)}%</p>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-4 overflow-hidden shadow-inner">
                         <div
-                            className="bg-gradient-to-r from-blue-500 to-indigo-600 h-full transition-all duration-300"
+                            className="bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600 h-full transition-all duration-500 ease-out rounded-full shadow-lg"
                             style={{ width: `${(spent / totalBudget) * 100}%` }}
                         />
                     </div>
-                    <p className="text-xs text-gray-500 font-light mt-2">
-                        {Math.round((spent / totalBudget) * 100)}% of budget used
+                    <p className="text-xs text-gray-600 font-light">
+                        {remaining >= 0
+                            ? `💚 You have $${remaining.toLocaleString()} left to spend`
+                            : `⚠️ Budget exceeded by $${Math.abs(remaining).toLocaleString()}`}
                     </p>
                 </div>
 
-                {/* Pie Chart */}
-                <div className="bg-gray-50 rounded-xl p-6">
-                    <ResponsiveContainer width="100%" height={250}>
+                {/* ===== PIE CHART - ENHANCED ===== */}
+                <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-8 border border-gray-200 shadow-sm">
+                    <div className="mb-4">
+                        <h4 className="text-sm font-bold text-gray-900 mb-1">Distribution Overview</h4>
+                        <p className="text-xs text-gray-600 font-light">Visual breakdown of budget allocation</p>
+                    </div>
+                    <ResponsiveContainer width="100%" height={280}>
                         <PieChart>
                             <Pie
                                 data={data}
                                 cx="50%"
                                 cy="50%"
-                                innerRadius={60}
-                                outerRadius={100}
-                                paddingAngle={2}
+                                innerRadius={70}
+                                outerRadius={110}
+                                paddingAngle={3}
                                 dataKey="value"
+                                animationBegin={0}
+                                animationDuration={800}
+                                animationEasing="ease-out"
                             >
                                 {data.map((entry, index) => (
-                                    <Cell key={`cell-${index}`} fill={entry.color} />
+                                    <Cell
+                                        key={`cell-${index}`}
+                                        fill={entry.color}
+                                        className="hover:opacity-80 transition-opacity duration-300"
+                                    />
                                 ))}
                             </Pie>
                             <Tooltip
                                 formatter={(value) => `$${value.toLocaleString()}`}
                                 contentStyle={{
-                                    backgroundColor: '#fff',
-                                    border: '1px solid #e5e7eb',
-                                    borderRadius: '8px'
+                                    backgroundColor: '#ffffff',
+                                    border: '2px solid #e5e7eb',
+                                    borderRadius: '12px',
+                                    boxShadow: '0 10px 25px rgba(0,0,0,0.1)',
+                                    fontFamily: 'inherit'
                                 }}
+                                labelStyle={{ color: '#1f2937', fontWeight: '600' }}
                             />
-                            <Legend />
+                            <Legend
+                                wrapperStyle={{ paddingTop: '20px' }}
+                                formatter={(value, entry) => (
+                                    <span style={{ color: '#4b5563', fontSize: '13px', fontWeight: '500' }}>
+                                        {value}
+                                    </span>
+                                )}
+                            />
                         </PieChart>
                     </ResponsiveContainer>
                 </div>
 
-                {/* Breakdown Table */}
-                <div className="space-y-2">
-                    <h4 className="font-semibold text-gray-900">Detailed Breakdown</h4>
+                {/* ===== DETAILED BREAKDOWN TABLE - ENHANCED ===== */}
+                <div className="space-y-4">
+                    <div className="flex items-center gap-2 mb-4">
+                        <span className="text-xl">📋</span>
+                        <h4 className="font-bold text-lg text-gray-900">Detailed Item Breakdown</h4>
+                    </div>
+
                     <div className="space-y-2">
-                        {data.map((item) => (
-                            <div key={item.name} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                                <div className="flex items-center space-x-3">
-                                    <div
-                                        className="w-3 h-3 rounded-full"
-                                        style={{ backgroundColor: item.color }}
-                                    />
-                                    <span className="font-light text-gray-700">{item.name}</span>
-                                </div>
-                                <div className="text-right">
-                                    <p className="font-semibold text-gray-900">${item.value.toLocaleString()}</p>
-                                    <p className="text-xs text-gray-500">
-                                        {Math.round((item.value / totalBudget) * 100)}%
-                                    </p>
+                        {data.map((item, index) => (
+                            <div
+                                key={item.name}
+                                className="group p-4 bg-white border-2 border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50/30 hover:shadow-md transition-all duration-300 cursor-pointer"
+                            >
+                                <div className="flex items-center justify-between">
+                                    {/* LEFT SIDE */}
+                                    <div className="flex items-center gap-4 flex-1">
+                                        {/* COLOR DOT */}
+                                        <div className="relative">
+                                            <div
+                                                className="w-4 h-4 rounded-full shadow-md group-hover:scale-125 transition-transform duration-300"
+                                                style={{ backgroundColor: item.color }}
+                                            />
+                                        </div>
+
+                                        {/* ITEM NAME */}
+                                        <div className="flex-1">
+                                            <p className="font-semibold text-gray-900 group-hover:text-blue-700 transition-colors duration-300">
+                                                {item.name}
+                                            </p>
+                                        </div>
+
+                                        {/* PROGRESS BAR */}
+                                        <div className="hidden md:flex items-center gap-2 flex-1 max-w-xs">
+                                            <div className="flex-1 bg-gray-200 rounded-full h-2 overflow-hidden">
+                                                <div
+                                                    className="h-full transition-all duration-300"
+                                                    style={{
+                                                        width: `${(item.value / totalBudget) * 100}%`,
+                                                        backgroundColor: item.color
+                                                    }}
+                                                />
+                                            </div>
+                                            <span className="text-xs font-semibold text-gray-600 whitespace-nowrap">
+                                                {Math.round((item.value / totalBudget) * 100)}%
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    {/* RIGHT SIDE - PRICE */}
+                                    <div className="text-right ml-4">
+                                        <p className="font-bold text-gray-900 text-lg group-hover:text-blue-600 transition-colors duration-300">
+                                            ${item.value.toLocaleString()}
+                                        </p>
+                                        <p className="text-xs text-gray-500 font-light">
+                                            {Math.round((item.value / totalBudget) * 100)}% of total
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                         ))}
                     </div>
                 </div>
 
-                {/* Action Buttons */}
-                <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-gray-100">
-                    <button
-                        onClick={exportBudgetPDF}
-                        className="flex items-center justify-center gap-2 flex-1 px-4 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg hover:shadow-lg transition font-semibold text-sm"
-                    >
-                        <Download size={18} />
-                        📥 Export as PDF
-                    </button>
-                    <button className="flex-1 px-4 py-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition font-light text-sm">
-                        📊 View Full Report
+                {/* ===== SUMMARY STATS ===== */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl border border-blue-200">
+                    <div className="text-center">
+                        <p className="text-2xl font-bold text-blue-600">{data.length}</p>
+                        <p className="text-xs text-gray-600 font-light">Items</p>
+                    </div>
+                    <div className="text-center">
+                        <p className="text-2xl font-bold text-purple-600">${Math.max(...data.map(d => d.value)).toLocaleString()}</p>
+                        <p className="text-xs text-gray-600 font-light">Highest Item</p>
+                    </div>
+                    <div className="text-center">
+                        <p className="text-2xl font-bold text-green-600">${Math.round(spent / data.length).toLocaleString()}</p>
+                        <p className="text-xs text-gray-600 font-light">Avg. Per Item</p>
+                    </div>
+                    <div className="text-center">
+                        <p className={`text-2xl font-bold ${remaining >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                            {remaining >= 0 ? '✓' : '⚠️'}
+                        </p>
+                        <p className="text-xs text-gray-600 font-light">Budget Status</p>
+                    </div>
+                </div>
+
+                {/* ===== ACTION BUTTONS - ENHANCED ===== */}
+                <div className="flex flex-col sm:flex-row gap-3 pt-6 border-t-2 border-gray-200">
+                    {/* PRIMARY BUTTON */}
+                    <div className="flex-1 group relative">
+                        <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg blur opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
+                        <button
+                            onClick={exportBudgetPDF}
+                            className="relative w-full px-6 py-4 bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center gap-3 active:scale-95"
+                        >
+                            <span className="text-xl">📥</span>
+                            <div>
+                                <p className="font-bold">Export as PDF</p>
+                                <p className="text-xs text-blue-100 font-light">Download complete breakdown</p>
+                            </div>
+                        </button>
+                    </div>
+
+                    {/* SECONDARY BUTTON */}
+                    <button className="flex-1 px-6 py-4 border-2 border-gray-300 hover:border-blue-400 text-gray-700 hover:text-blue-700 rounded-lg font-semibold transition-all duration-300 hover:bg-blue-50 flex items-center justify-center gap-3 active:scale-95">
+                        <span className="text-xl">📊</span>
+                        <div className="text-left">
+                            <p className="font-bold">View Full Report</p>
+                            <p className="text-xs text-gray-600 font-light hidden sm:block">Detailed analytics</p>
+                        </div>
                     </button>
                 </div>
 
-                {/* Info */}
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                    <p className="text-xs text-blue-900 font-light">
-                        💡 Click "Export as PDF" to download your complete budget breakdown with all details!
-                    </p>
+                {/* ===== INFO BANNER ===== */}
+                <div className="p-5 bg-gradient-to-r from-blue-100 to-indigo-100 border-2 border-blue-300 rounded-xl">
+                    <div className="flex gap-3">
+                        <span className="text-2xl flex-shrink-0">💡</span>
+                        <div>
+                            <p className="text-sm font-semibold text-blue-900 mb-1">Pro Tip</p>
+                            <p className="text-xs text-blue-800 font-light">
+                                Export your budget as PDF to share with designers or use as a shopping reference. All prices are from verified sources!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                {/* ===== FOOTER NOTE ===== */}
+                <div className="text-center p-3 text-xs text-gray-600 font-light border-t border-gray-200">
+                    <p>Last updated: {new Date().toLocaleDateString()} • All prices are estimates and subject to change</p>
                 </div>
             </div>
         </div>

@@ -626,7 +626,7 @@ export const Room3DMinimalist = ({
                         <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500 rounded-lg blur opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
                         <button
                             onClick={exportToGLB}
-                            className="relative w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-6 py-4 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-2xl flex items-center justify-center gap-3 group/btn active:scale-95"
+                            className="relative w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-6 py-4 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-2xl flex items-center justify-center gap-3 group/btn active:scale-95 cursor-pointer"
                         >
                             <span className="text-xl group-hover/btn:scale-110 transition-transform duration-300">📦</span>
                             <div className="text-left">
