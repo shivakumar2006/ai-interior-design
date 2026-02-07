@@ -404,6 +404,9 @@ export const Room3DBudget = ({
 
         sofaGroup.add(sofaBase, sofaCushion, sofaBackrest, sofaArmL, sofaArmR);
         sofaGroup.position.set(-2.5, 0, 2);
+        sofaGroup.rotation.y = Math.PI / 2;
+        sofaGroup.position.z = -2;
+        sofaGroup.position.x = -6;
         scene.add(sofaGroup);
         groupsRef.current.sofa = sofaGroup;
         meshesRef.current.sofa = sofaMat;
@@ -497,6 +500,7 @@ export const Room3DBudget = ({
 
         plantGroup.add(pot, plant);
         plantGroup.position.set(-5.5, 0, -2);
+        plantGroup.position.z = 2;
         scene.add(plantGroup);
         groupsRef.current.plant = plantGroup;
 

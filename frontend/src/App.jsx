@@ -44,16 +44,16 @@ function App() {
     // Template prompts for quick design changes
     const designTemplates = [
         {
-            label: "✨ Modern Minimalist",
-            prompt: "Change to modern minimalist design with clean lines, neutral colors, and minimal furniture. Keep the 3D view and budget calculation, show me budget first of it and when i say yes then show me the color palettes chosen by you and let me choose those as well and then show me the room interior."
-        },
-        {
             label: "👑 Luxury Style",
             prompt: "Transform into luxury design with premium materials, gold accents, velvet textures, and high-end furniture, show me budget first of it and when i say yes then show me the color palettes chosen by you and let me choose those as well and then show me the room interior."
         },
         {
             label: "💰 Budget-Friendly",
             prompt: "Redesign as budget-friendly with affordable furniture, smart choices, and value-conscious styling. Keep quality high but prices low, show me budget first of it and when i say yes then show me the color palettes chosen by you and let me choose those as well and then show me the room interior."
+        },
+        {
+            label: "✨ Modern Minimalist",
+            prompt: "Change to modern minimalist design with clean lines, neutral colors, and minimal furniture. Keep the 3D view and budget calculation, show me budget first of it and when i say yes then show me the color palettes chosen by you and let me choose those as well and then show me the room interior."
         },
         // {
         //     label: "💼 Professional Office",
