@@ -5,7 +5,7 @@
 [![Netlify Status](https://api.netlify.com/api/v1/badges/[your-site-id]/deploy-status)](https://app.netlify.com)
 ![React](https://img.shields.io/badge/React-18.0-blue)
 ![Three.js](https://img.shields.io/badge/Three.js-Latest-green)
-![Tambo AI](https://img.shields.io/badge/Claude-API-purple)
+![Tambo AI](https://img.shields.io/badge/Tambo-AI-purple)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 
 ## ✨ Features
