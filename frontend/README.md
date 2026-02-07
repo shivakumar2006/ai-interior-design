@@ -277,7 +277,7 @@ Watch the 90-second demo showing the complete workflow:
 ## 📞 Support & Contact
 
 - **Email**: official.shivakumar06@gmail.com
-- **LinkedIn**: ('https://www.linkedin.com/in/shiva-shiva-8a48002a7/')**
+- **LinkedIn**: (https://www.linkedin.com/in/shiva-shiva-8a48002a7/)**
 
 ## 📄 License
 
