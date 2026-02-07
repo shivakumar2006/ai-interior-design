@@ -249,7 +249,7 @@ function App() {
                                     </div>
                                 ) : (
                                     <div className="w-full mt-20 flex justify-center items-center text-center py-20">
-                                        <div className="space-y-6">
+                                        <div className="space-y-15">
                                             <div className="flex justify-center">
                                                 <StyledComponents />
                                             </div>
