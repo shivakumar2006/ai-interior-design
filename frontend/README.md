@@ -214,37 +214,6 @@ One platform for everything: Design → Customize → Budget → Shop → Export
 | Mobile Response | Fully responsive (375px-1920px) |
 | Export Speed | <1 second |
 
-## 🌐 Browser Support
-
-| Browser | Version |
-|---------|---------|
-| Chrome | 90+ |
-| Firefox | 88+ |
-| Safari | 14+ |
-| Edge | 90+ |
-| Mobile Safari | iOS 14+ |
-| Chrome Mobile | Latest |
-
-## 💡 Project Structure
-
-```
-src/
-├── components/
-│   ├── DesignGeneratorChat.jsx      # Tambo AI chat
-│   ├── Room3DViewer.jsx             # Three.js visualization
-│   ├── FurnitureControls.jsx        # Toggle grid
-│   ├── BudgetBreakdown.jsx          # Budget + analytics
-│   ├── ColorPalette.jsx             # Color tools
-│   ├── ShoppingGrid.jsx             # Amazon products
-│   ├── DesignComparison.jsx         # Before/after
-│   └── MainApp.jsx                  # Main component
-├── utils/
-│   ├── exporters.js                 # GLB, PDF, PNG export
-│   ├── calculations.js              # Budget math
-│   └── colorUtils.js                # Color helpers
-└── styles/
-    └── globals.css                  # Global styles
-```
 
 ## 🔧 Configuration
 
@@ -263,14 +232,6 @@ All components are modular and easy to customize:
 - Adjust budget categories in `calculations.js`
 - Add new export formats in `exporters.js`
 
-## 📈 Monetization Model
-
-**Affiliate Revenue (5-10% commission)**
-- Amazon furniture links in product grid
-- Revenue from day one
-- No subscription required initially
-- Future premium tier planned
-
 ## 🎬 Demo
 
 Watch the 90-second demo showing the complete workflow:
@@ -283,11 +244,6 @@ Watch the 90-second demo showing the complete workflow:
 - Context-aware color recommendations
 - Smart budget optimization
 - Dynamic UI generation
-
-### Kubernetes / MCP Tools
-- Real-time data processing
-- Scalable backend
-- Reliable execution
 
 ## 🧪 Testing
 
@@ -320,16 +276,14 @@ Watch the 90-second demo showing the complete workflow:
 
 ## 📞 Support & Contact
 
-- **GitHub Issues**: [Report bugs](https://github.com/yourusername/ai-interior-designer/issues)
-- **Email**: your.email@example.com
-- **Portfolio**: [Your portfolio link]
-- **LinkedIn**: [Your LinkedIn]
+- **Email**: official.shivakumar06@gmail.com
+- **LinkedIn**: ('https://www.linkedin.com/in/shiva-shiva-8a48002a7/')**
 
 ## 📄 License
 
 MIT License - See [LICENSE](LICENSE) file for details
 
-## 🙏 Acknowledgments
+##  Acknowledgments
 
 - **Tambo AI** for generative UI capabilities
 - **Three.js** community for 3D visualization
@@ -347,16 +301,3 @@ Made with ❤️ for designers, architects, and creative professionals
 **[⭐ Star this repo if you find it useful!](https://github.com/yourusername/ai-interior-designer)**
 
 </div>
-
----
-
-## 🏆 Why This Project
-
-This project demonstrates:
-- **Deep technical knowledge** - 3D graphics, AI integration, full-stack development
-- **Product thinking** - Complete workflow, real monetization, user-centric design
-- **Innovation** - Blender export is genuinely unique
-- **Execution excellence** - Zero bugs, professional polish, real features
-- **Business understanding** - Affiliate model, market fit, scalability
-
-**It's not just a hackathon project. It's a real product ready to launch.**
