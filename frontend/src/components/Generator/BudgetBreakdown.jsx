@@ -423,7 +423,7 @@ export const BudgetBreakdown = ({
                         <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg blur opacity-0 group-hover:opacity-100 transition-all duration-300"></div>
                         <button
                             onClick={exportBudgetPDF}
-                            className="relative w-full px-6 py-4 bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center gap-3 active:scale-95"
+                            className="relative w-full px-6 py-4 bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center gap-3 active:scale-95 cursor-pointer"
                         >
                             <span className="text-xl">📥</span>
                             <div>
@@ -434,7 +434,7 @@ export const BudgetBreakdown = ({
                     </div>
 
                     {/* SECONDARY BUTTON */}
-                    <button className="flex-1 px-6 py-4 border-2 border-gray-300 hover:border-blue-400 text-gray-700 hover:text-blue-700 rounded-lg font-semibold transition-all duration-300 hover:bg-blue-50 flex items-center justify-center gap-3 active:scale-95">
+                    <button className="flex-1 px-6 py-4 border-2 border-gray-300 hover:border-blue-400 text-gray-700 hover:text-blue-700 rounded-lg font-semibold transition-all duration-300 hover:bg-blue-50 flex items-center justify-center gap-3 active:scale-95 cursor-pointer">
                         <span className="text-xl">📊</span>
                         <div className="text-left">
                             <p className="font-bold">View Full Report</p>
