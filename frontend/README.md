@@ -7,6 +7,8 @@
 [![Made with React](https://img.shields.io/badge/Made%20with-React-61DAFB?style=for-the-badge&logo=react&logoColor=white)](#)
 [![Built with Tambo](https://img.shields.io/badge/Built%20with-Tambo%20AI-FF6B6B?style=for-the-badge)](#)
 
+
+
 ## 🚀 What is AI Interior Designer?
 
 A complete platform that generates professional interior designs from natural language descriptions, visualizes them in real-time 3D, and exports them to Blender for professional rendering.
